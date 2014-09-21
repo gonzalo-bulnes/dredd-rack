@@ -1,4 +1,16 @@
-require 'rspec/core/rake_task'
+begin
+  require 'inch/rake'
+
+  Inch::Rake::Suggest.new(:inch) do |suggest|
+    suggest.args << "--private"
+    suggest.args << "--pedantic"
+  end
+rescue LoadError
+  desc 'Inch rake task not available'
+  task :inch do
+  abort 'Inch rake task is not available. Be sure to install inch as a gem or plugin'
+  end
+end
 
 begin
   require 'rspec/core/rake_task'
@@ -26,4 +38,4 @@ rescue LoadError
   end
 end
 
-task :default => ['spec:public', 'spec:development']
+task :default => ['spec:public', 'spec:development', :inch]
