@@ -1,1 +1,1 @@
-require 'rack/version'
+require 'dredd/rack/version'
