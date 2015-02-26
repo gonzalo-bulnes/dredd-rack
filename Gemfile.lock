@@ -1,0 +1,14 @@
+PATH
+  remote: .
+  specs:
+    dredd-rack (0.1.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  dredd-rack!
