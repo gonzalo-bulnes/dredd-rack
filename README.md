@@ -5,6 +5,41 @@ Convenient API blueprint testing with [Dredd][dredd] for Rack applications.
 
   [dredd]: https://github.com/apiaryio/dredd
 
+Usage
+-----
+
+Add the gem to your Gemfile:
+
+```ruby
+gem 'dredd-rack', '~> 1.0'
+```
+
+Add the rake task to your Rakefile:
+
+```ruby
+# Rakefile
+
+# ...
+
+require 'dredd/rack'
+
+# Optionally add the API blueprint verification to the default test suite
+# task :default => [:spec, 'blueprint:verify']
+```
+
+Run the API blueprint verification (the API server must be up):
+
+```bash
+# start any Rack application (including Rails, Sinatra) locally
+rackup -p 3000
+# or make sure the remote server is up
+
+rake blueprint:verify # run against http://localhost:3000 by default
+# or specify a different server (including any remote server):
+#API_HOST=http://localhost:4567 rake blueprint:verify
+#API_HOST=http://api.example.com rake blueprint:verify
+```
+
 License
 -------
 
