@@ -14,29 +14,37 @@ Add the gem to your Gemfile:
 gem 'dredd-rack', '~> 1.0'
 ```
 
-Add the rake task to your Rakefile:
+Require your app and add the Dredd::Rack rake task to your Rakefile:
 
 ```ruby
 # Rakefile
 
 # ...
 
+# Specify the application to test:
+#
+# Example:
+#
+#     require 'dredd-rack-example'
+#     def app() Dredd::Rack::Example end
+#
+# Returns the application to test
+require 'your_app'
+def app() YourApp end
+
+# require the Dredd::Rack rake task
 require 'dredd/rack'
 
 # Optionally add the API blueprint verification to the default test suite
 # task :default => [:spec, 'blueprint:verify']
 ```
 
-Run the API blueprint verification (the API server must be up):
+Run the API blueprint verification:
 
 ```bash
-# start any Rack application (including Rails, Sinatra) locally
-rackup -p 3000
-# or make sure the remote server is up
+rake blueprint:verify
 
-rake blueprint:verify # run against http://localhost:3000 by default
-# or specify a different server (including any remote server):
-#API_HOST=http://localhost:4567 rake blueprint:verify
+# or specify a remote server:
 #API_HOST=http://api.example.com rake blueprint:verify
 ```
 

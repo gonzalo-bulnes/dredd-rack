@@ -23,6 +23,7 @@ require 'rainbow'
 #
 # Returns nothing but does abort the rake tasks suite if validation fails.
 namespace :blueprint do
+  require 'capybara'
   desc 'Verify the API blueprint accuracy'
   task :verify do
     # check if the dredd blueprint testing tool is available
@@ -39,12 +40,20 @@ namespace :blueprint do
       eos
     end
 
-    api_host =  ENV['API_HOST'] || 'http://localhost:3000'
-
-    command = "dredd doc/*.apib doc/*.apib.md #{api_host}"
     puts <<-eos.gsub /^( |\t)+/, ""
 
       #{Rainbow('Verifiy the API conformance against its blueprint.').blue}
+    eos
+
+    unless api_host  = ENV['API_HOST']
+      server = Capybara::Server.new(app)
+      server.boot
+
+      api_host =  'http://' + server.host + ':' + server.port.to_s
+    end
+
+    command = "dredd doc/*.apib doc/*.apib.md #{api_host}"
+    puts <<-eos.gsub /^( |\t)+/, ""
       #{command}
 
     eos
@@ -60,8 +69,6 @@ namespace :blueprint do
 
         Note that specifying a different host is easy:
         #{Rainbow('`rake blueprint:verify API_HOST=http://localhost:4567`').yellow}
-
-        Do not forget to start the server!
 
       eos
     end

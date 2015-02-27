@@ -16,6 +16,7 @@ Gem::Specification.new do |gem|
   gem.files = Dir["{doc,lib}/**/*", "Gemfile", "LICENSE", "Rakefile", "README.md"]
   gem.test_files = Dir["spec/**/*"]
 
+  gem.add_dependency "capybara", "~> 2.4"
   gem.add_dependency "rake", "~> 10.4"
   gem.add_dependency "rainbow", "~> 2.0"
 
