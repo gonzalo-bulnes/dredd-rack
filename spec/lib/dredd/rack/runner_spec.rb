@@ -1,42 +1,44 @@
 require 'spec_helper'
 
-describe 'Dredd::Rack::Runner' do
+describe Dredd::Rack::Runner do
 
-  describe '.run' do
+  it 'responds to :command' do
+    expect(subject).to respond_to :command
+  end
 
-    context 'with no arguments' do
+  it 'responds to :command_parts', private: true do
+    expect(subject).to respond_to :command_parts
+  end
 
-      it 'raises an error' do
-        expect{ Dredd::Rack::Runner.run }.to raise_error ArgumentError
+  it 'responds to :command_parts=', private: true do
+    expect(subject).to respond_to :command_parts=
+  end
+
+  describe 'responds to all the Dredd options' do
+
+    Dredd::Rack::Runner::OPTIONS.each do |option|
+      it "responds to :#{option}" do
+        expect(subject).to respond_to option
       end
     end
+  end
 
-    context 'with one argument' do
+  describe '#command' do
 
-      it 'loads the blueprints from the default path' do
-        allow(Dredd::Rack::Runner).to receive_message_chain(:configuration, :default_path_to_blueprints)
-                                      .and_return('/blueprints/path/*.apib')
-
-        expect(Dredd::Rack::Runner.run 'http://api.example.com').to eq 'dredd /blueprints/path/*.apib http://api.example.com'
-      end
+    it 'defaults to "dredd"' do
+      expect(subject.command).to eq 'dredd'
     end
+  end
 
-    context 'with several arguments' do
-
-      it 'calls Dredd with them' do
-        expect(Dredd::Rack::Runner.run '/some/path', 'another/path/', 'http://api.example.com').to \
-                                       eq 'dredd /some/path another/path/ http://api.example.com'
-      end
+  Dredd::Rack::Runner::BOOLEAN_OPTIONS.each do |option|
+    describe "##{option}" do
+      it_behaves_like 'a boolean option', option, ['some argument']
     end
+  end
 
-    context 'when given a block of options' do
-
-      it 'calls Dredd with them' do
-        subject = Dredd::Rack::Runner.run('*.apib', 'http://api.example.com') do |options|
-          options.dry_run
-        end
-        expect(subject).to eq 'dredd *.apib http://api.example.com --dry-run'
-      end
+  Dredd::Rack::Runner::SINGLE_ARGUMENT_OPTIONS.each do |option|
+    describe "##{option}" do
+      it_behaves_like 'a single-argument option', option, ['first argument', 'second argument']
     end
   end
 end

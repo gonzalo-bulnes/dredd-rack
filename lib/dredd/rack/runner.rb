@@ -2,51 +2,36 @@ module Dredd
   module Rack
     class Runner
 
-      def self.run(*paths_to_blueprints, api_endpoint)
-        paths_to_blueprints.push Dredd::Rack::Runner.configuration.default_path_to_blueprints if paths_to_blueprints.empty?
+      undef_method :method
 
-        command = Command.new paths_to_blueprints, api_endpoint
-        command = yield command if block_given?
-        command.parts.join(' ')
+      BOOLEAN_OPTIONS         = [:dry_run, :names, :sorted, :inline_errors,
+                                 :details, :color, :timestamp, :silent,
+                                 :help, :version]
+      SINGLE_ARGUMENT_OPTIONS = [:hookfiles, :only, :reporter, :output, :header,
+                                 :user, :method, :level, :path]
+      OPTIONS = BOOLEAN_OPTIONS + SINGLE_ARGUMENT_OPTIONS
+
+      attr_accessor :command_parts
+
+      def initialize
+        @command_parts = ['dredd']
       end
 
-      def self.configuration; end
+      def command
+        @command_parts.join(' ')
+      end
 
-      class Command
+      def method_missing(name, *args)
+        super unless OPTIONS.include? name.to_sym
 
-        attr_reader :parts
+        option_flag = name.to_s.gsub('_', '-').prepend('--')
+        command_parts = self.command_parts.push option_flag
+        command_parts = self.command_parts.push args.slice(0).to_s if SINGLE_ARGUMENT_OPTIONS.include? name
+        self
+      end
 
-        def initialize(paths_to_blueprints, api_endpoint)
-          @parts = ['dredd'] + paths_to_blueprints + [api_endpoint]
-        end
-
-        def dry_run
-          @parts.push '--dry-run'
-          self
-        end
-
-        def hookfiles(pattern)
-          @parts.push '--hookfiles'
-          @parts.push 'pattern'
-          self
-        end
-
-        def names
-          @parts.push '--names'
-          self
-        end
-
-        def only(transaction_name)
-          @parts.push '--only'
-          @parts.push transaction_name
-          self
-        end
-
-        def reporter(report_format)
-          @parts.push '--reporter'
-          @parts.push report_format
-          self
-        end
+      def respond_to_missing?(method, include_private=false)
+        OPTIONS.include? method.to_sym || super
       end
     end
   end
