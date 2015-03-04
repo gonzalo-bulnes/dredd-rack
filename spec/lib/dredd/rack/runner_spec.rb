@@ -28,5 +28,15 @@ describe 'Dredd::Rack::Runner' do
                                        eq 'dredd /some/path another/path/ http://api.example.com'
       end
     end
+
+    context 'when given a block of options' do
+
+      it 'calls Dredd with them' do
+        subject = Dredd::Rack::Runner.run('*.apib', 'http://api.example.com') do |options|
+          options.dry_run
+        end
+        expect(subject).to eq 'dredd *.apib http://api.example.com --dry-run'
+      end
+    end
   end
 end
