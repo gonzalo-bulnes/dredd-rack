@@ -4,12 +4,14 @@ module Dredd
 
       undef_method :method
 
-      BOOLEAN_OPTIONS         = [:dry_run, :names, :sorted, :inline_errors,
-                                 :details, :color, :timestamp, :silent,
-                                 :help, :version]
-      SINGLE_ARGUMENT_OPTIONS = [:hookfiles, :only, :reporter, :output, :header,
-                                 :user, :method, :level, :path]
-      OPTIONS = BOOLEAN_OPTIONS + SINGLE_ARGUMENT_OPTIONS
+      NEGATABLE_BOOLEAN_OPTIONS = [:dry_run!, :names!, :sorted!, :inline_errors!,
+                                   :details!, :color!, :timestamp!, :silent!]
+      META_OPTIONS              = [:help, :version]
+      BOOLEAN_OPTIONS           = NEGATABLE_BOOLEAN_OPTIONS + META_OPTIONS
+
+      SINGLE_ARGUMENT_OPTIONS   = [:hookfiles, :only, :reporter, :output, :header,
+                                   :user, :method, :level, :path]
+      OPTIONS                   = BOOLEAN_OPTIONS + SINGLE_ARGUMENT_OPTIONS
 
       attr_accessor :command_parts
 
@@ -30,11 +32,12 @@ module Dredd
         def method_missing(name, *args)
           super unless OPTIONS.include? name.to_sym
 
-          option_flag = name.to_s.gsub('_', '-').prepend('--')
+          option_flag = name.to_s.gsub('_', '-').gsub('!', '').prepend('--')
           command_parts = self.command_parts.push option_flag
           command_parts = self.command_parts.push args.slice(0).to_s if SINGLE_ARGUMENT_OPTIONS.include? name
           self
         end
+
     end
   end
 end
