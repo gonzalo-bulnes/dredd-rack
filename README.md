@@ -1,6 +1,9 @@
 Dredd::Rack
 ===========
 
+[![Dredd Reference Version](https://img.shields.io/badge/dredd_reference_version-0.4.1-blue.svg
+)](https://github.com/apiaryio/dredd)
+
 Convenient API blueprint testing with [Dredd][dredd] for Rack applications.
 
   [dredd]: https://github.com/apiaryio/dredd
