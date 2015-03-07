@@ -31,6 +31,15 @@ describe Dredd::Rack::Runner do
     end
   end
 
+  describe 'responds to the negated form of the Dredd boolean options', public: true do
+
+    Dredd::Rack::Runner::NEGATABLE_BOOLEAN_OPTIONS.each do |option|
+      it "responds to :no_#{option}" do
+        expect(subject).to respond_to "no_#{option}".to_sym
+      end
+    end
+  end
+
   describe '#command_valid?', private: true do
 
     context 'when the generated command has less than two arguments' do
@@ -65,6 +74,12 @@ describe Dredd::Rack::Runner do
   Dredd::Rack::Runner::BOOLEAN_OPTIONS.each do |option|
     describe "##{option}", public: true do
       it_behaves_like 'a boolean option', option, ['some argument']
+    end
+  end
+
+  Dredd::Rack::Runner::NEGATABLE_BOOLEAN_OPTIONS.each do |option|
+    describe "#no_#{option}", public: true do
+      it_behaves_like 'a boolean option', "no_#{option}".to_sym, ['some argument']
     end
   end
 
