@@ -25,10 +25,10 @@ module Dredd
       end
 
       def run
-        Kernel.system(command) if command.valid?
+        Kernel.system(command) if command_valid?
       end
 
-      def valid?
+      def command_valid?
         command.has_at_least_two_arguments?
       end
 

@@ -18,12 +18,12 @@ describe Dredd::Rack::Runner do
     expect(subject).to respond_to :run
   end
 
-  it 'responds to :valid?' do
-    expect(subject).to respond_to :valid?
+  it 'responds to :command_valid?' do
+    expect(subject).to respond_to :command_valid?
   end
 
   it 'generates a valid command by default' do
-    expect(subject).to be_valid
+    expect(subject.command_valid?).to be_truthy
   end
 
   describe 'responds to all the Dredd options' do
@@ -61,7 +61,7 @@ describe Dredd::Rack::Runner do
       it 'runs Dredd!' do
         command = double()
         allow(subject).to receive(:command).and_return(command)
-        allow(command).to receive(:valid?).and_return(true)
+        allow(subject).to receive(:command_valid?).and_return(true)
 
         expect(Kernel).to receive(:system).with(command)
         subject.run
@@ -69,13 +69,13 @@ describe Dredd::Rack::Runner do
     end
   end
 
-  describe '#valid?' do
+  describe '#command_valid?' do
 
     context 'when the generated command has less than two arguments' do
 
       it 'returns false' do
         allow(subject).to receive_message_chain(:command, :has_at_least_two_arguments?).and_return(false)
-        expect(subject).not_to be_valid
+        expect(subject.command_valid?).not_to be_truthy
       end
     end
   end
