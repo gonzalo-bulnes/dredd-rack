@@ -10,8 +10,11 @@ module Dredd
     #    dredd.level(:warning).dry_run!.run
     #
     #    # run `dredd blueprints/*.md doc/*.md https://api.example.com --no-color`
-    #    dredd = Dredd::Rack::Runner.new('https://api.example.com')
-    #    dredd.paths_to_blueprints('blueprints/*.md', 'doc/*.md').no_color!.run
+    #    dredd = Dredd::Rack::Runner.new 'https://api.example.com' do |options|
+    #      options.paths_to_blueprints 'blueprints/*.md', 'doc/*.md'
+    #      options.no_color!
+    #    end
+    #    dredd.run
     #
     class Runner
 
@@ -42,6 +45,8 @@ module Dredd
         @paths_to_blueprints = 'doc/*.apib doc/*.apib.md'
         @api_endpoint = api_endpoint || 'http://localhost:3000'
         @command_parts = []
+
+        yield self if block_given?
       end
 
       # Return the Dredd command line

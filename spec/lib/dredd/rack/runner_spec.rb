@@ -68,6 +68,26 @@ describe Dredd::Rack::Runner do
         expect(Dredd::Rack::Runner.new('https://api.example.com').command).not_to match /http:\/\/localhost:3000/
       end
     end
+
+    context 'with a block as argument' do
+
+      it 'returns a configured Dredd runner' do
+
+        subject = Dredd::Rack::Runner.new 'http://localhost:4567' do |options|
+          options.paths_to_blueprints 'blueprints/*.apib', 'doc/*.apib'
+          options.level :silly
+          options.no_color!
+        end
+
+        expect(subject.command).to match /http:\/\/localhost:4567/
+        expect(subject.command).to match /blueprints\/\*\.apib doc\/\*\.apib/
+        expect(subject.command).to match /--level silly/
+        expect(subject.command).to match /--no-color/
+
+        expect(subject.command).not_to match /http:\/\/localhost:3000/
+        expect(subject.command).not_to match /doc\/\*\.apib.md/
+      end
+    end
   end
 
   describe '#paths_to_blueprints', public: true do
