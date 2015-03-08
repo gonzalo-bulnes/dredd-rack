@@ -14,6 +14,10 @@ describe Dredd::Rack::Runner do
     expect(subject).to respond_to :command_parts=
   end
 
+  it 'respond_to :paths_to_blueprints', public: true do
+    expect(subject).to respond_to :paths_to_blueprints
+  end
+
   it 'responds to :run', public: true do
     expect(subject).to respond_to :run
   end
@@ -52,8 +56,40 @@ describe Dredd::Rack::Runner do
   end
 
   describe '#initialize', public: true do
-    it 'emits a warning if essential arguments are missing'
-    it 'enforces a default path to blueprints'
+
+    it 'raises ArgumentError' do
+      expect{ Dredd::Rack::Runner.new('') }.to raise_error ArgumentError, 'invalid API endpoint'
+    end
+
+    context 'with an API endpoint as argument' do
+
+      it 'defines a custom API endpoint' do
+        expect(Dredd::Rack::Runner.new('https://api.example.com').command).to end_with 'https://api.example.com'
+        expect(Dredd::Rack::Runner.new('https://api.example.com').command).not_to match /http:\/\/localhost:3000/
+      end
+    end
+  end
+
+  describe '#paths_to_blueprints', public: true do
+
+    it 'is chainable' do
+      expect(subject.paths_to_blueprints('some/path/*.apib')).to eq subject
+    end
+
+    context 'with one or more paths to blueprints as arguments' do
+
+      it 'defines custom paths to blueprints' do
+        expect(subject.paths_to_blueprints('blueprints/*.md', 'blueprints/*.apib').command).to match /blueprints\/\*\.md blueprints\/\*\.apib/
+        expect(subject.paths_to_blueprints('blueprints/*.md').command).not_to match /doc/
+      end
+    end
+
+    context 'with a blank path as argument', public: true do
+
+      it 'raises ArgumentError' do
+        expect{ subject.paths_to_blueprints('') }.to raise_error ArgumentError, 'invalid path to blueprints'
+      end
+    end
   end
 
   describe '#run', public: true do

@@ -5,9 +5,13 @@ module Dredd
     #
     # Usage:
     #
-    #    # run `dredd doc/*.apib doc/*.apib.md http://localhost:3000 --level warning --dry-run
+    #    # run `dredd doc/*.apib doc/*.apib.md http://localhost:3000 --level warning --dry-run`
     #    dredd = Dredd::Rack::Runner.new
     #    dredd.level(:warning).dry_run!.run
+    #
+    #    # run `dredd blueprints/*.md doc/*.md https://api.example.com --no-color`
+    #    dredd = Dredd::Rack::Runner.new('https://api.example.com')
+    #    dredd.paths_to_blueprints('blueprints/*.md', 'doc/*.md').no_color!.run
     #
     class Runner
 
@@ -25,16 +29,36 @@ module Dredd
       # Store the Dredd command line options
       attr_accessor :command_parts
 
-      def initialize
+      # Initialize a runner instance
+      #
+      # The API endpoint can be local or remote.
+      #
+      # api_endpoint - the API URL as a String
+      #
+      def initialize(api_endpoint=nil)
+        raise ArgumentError, 'invalid API endpoint' if api_endpoint == ''
+
         @dredd_command = 'dredd'
         @paths_to_blueprints = 'doc/*.apib doc/*.apib.md'
-        @api_endpoint = 'http://localhost:3000'
+        @api_endpoint = api_endpoint || 'http://localhost:3000'
         @command_parts = []
       end
 
       # Return the Dredd command line
       def command
         ([@dredd_command, @paths_to_blueprints, @api_endpoint] + @command_parts).join(' ')
+      end
+
+      # Define custom paths to blueprints
+      #
+      # paths_to_blueprints - as many Strings as paths where blueprints are located
+      #
+      # Returns self.
+      def paths_to_blueprints(*paths_to_blueprints)
+        raise ArgumentError, 'invalid path to blueprints' if paths_to_blueprints == ['']
+
+        @paths_to_blueprints = paths_to_blueprints.join(' ')
+        self
       end
 
       # Run Dredd
