@@ -31,7 +31,9 @@ module Dredd
       end
 
       def respond_to_missing?(method, include_private=false)
-        OPTIONS.include? method.to_sym || super
+        OPTIONS.include?(method.to_sym ) ||
+        NEGATABLE_BOOLEAN_OPTIONS.include?(method.to_s.gsub(/\Ano_/, '').to_sym) ||
+        super
       end
 
       private
@@ -41,7 +43,8 @@ module Dredd
         end
 
         def method_missing(name, *args)
-          super unless OPTIONS.include? name.to_sym
+          super unless OPTIONS.include?(name.to_sym ) ||
+                       NEGATABLE_BOOLEAN_OPTIONS.include?(name.to_s.gsub(/\Ano_/, '').to_sym)
 
           option_flag = name.to_s.gsub('_', '-').gsub('!', '').prepend('--')
           command_parts = self.command_parts.push option_flag
