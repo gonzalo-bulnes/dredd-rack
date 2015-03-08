@@ -1,5 +1,14 @@
 module Dredd
   module Rack
+
+    # A Ruby wrapper around the Dredd API blueprint validation tool
+    #
+    # Usage:
+    #
+    #    # run `dredd doc/*.apib doc/*.apib.md http://localhost:3000 --level warning --dry-run
+    #    dredd = Dredd::Rack::Runner.new
+    #    dredd.level(:warning).dry_run!.run
+    #
     class Runner
 
       undef_method :method
@@ -13,6 +22,7 @@ module Dredd
                                    :user, :method, :level, :path]
       OPTIONS                   = BOOLEAN_OPTIONS + SINGLE_ARGUMENT_OPTIONS
 
+      # Store the Dredd command line options
       attr_accessor :command_parts
 
       def initialize
@@ -22,14 +32,21 @@ module Dredd
         @command_parts = []
       end
 
+      # Return the Dredd command line
       def command
         ([@dredd_command, @paths_to_blueprints, @api_endpoint] + @command_parts).join(' ')
       end
 
+      # Run Dredd
+      #
+      # Returns true if the Dredd exit status is zero, false instead.
       def run
         Kernel.system(command) if command_valid?
       end
 
+      # Ensure that the runner does respond_to? its option methods
+      #
+      # See http://ruby-doc.org/core-2.2.0/Object.html#method-i-respond_to_missing-3F
       def respond_to_missing?(method, include_private=false)
         OPTIONS.include?(method.to_sym ) ||
         NEGATABLE_BOOLEAN_OPTIONS.include?(method.to_s.gsub(/\Ano_/, '').to_sym) ||
@@ -42,6 +59,15 @@ module Dredd
           command.has_at_least_two_arguments?
         end
 
+        # Private: Define as many setter methods as there are Dredd options
+        #
+        # The behaviour of Object#method_missing is not modified unless
+        # the called method name matches one of the Dredd options.
+        #
+        # name - Symbol for the method called
+        # args - arguments of the called method
+        #
+        # See also: http://ruby-doc.org/core-2.2.0/BasicObject.html#method-i-method_missing
         def method_missing(name, *args)
           super unless OPTIONS.include?(name.to_sym ) ||
                        NEGATABLE_BOOLEAN_OPTIONS.include?(name.to_s.gsub(/\Ano_/, '').to_sym)
