@@ -9,12 +9,11 @@ module Dredd
     #    dredd = Dredd::Rack::Runner.new
     #    dredd.level(:warning).dry_run!.run
     #
-    #    # run `dredd blueprints/*.md doc/*.md https://api.example.com --no-color`
-    #    dredd = Dredd::Rack::Runner.new 'https://api.example.com' do |options|
+    #    anderson = Anderson::Rack::Runner.new 'https://api.example.com' do |options|
     #      options.paths_to_blueprints 'blueprints/*.md', 'doc/*.md'
     #      options.no_color!
     #    end
-    #    dredd.run
+    #    anderson.run # runs `dredd blueprints/*.md doc/*.md https://api.example.com --no-color`
     #
     class Runner
 
@@ -141,3 +140,5 @@ class String
     split('--').first.split(' ').length >= 3
   end
 end
+
+Anderson = Dredd # Anderson::Rack::Runner.new runs just as fast as Dredd
