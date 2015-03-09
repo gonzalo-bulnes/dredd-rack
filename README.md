@@ -51,11 +51,23 @@ rake blueprint:verify
 #API_HOST=http://api.example.com rake blueprint:verify
 ```
 
+Credits
+-------
+
+The Dredd::Rack::RakeTask is heavily inspired in the [RSpec::Core::RakeTask][rspec-core-raketask] to provide a custom Rake tasks factory. Credits for the RSpec::Core::RakeTask go to the RSpec Development Team.
+
+  [rspec-core-raketask]: https://github.com/rspec/rspec-core/blob/v3.2.1/lib/rspec/core/rake_task.rb
+
 License
 -------
 
     Dredd::Rack provides convenient API blueprint testing to Rack applications.
     Copyright (C) 2015  Gonzalo Bulnes Guilpain
+
+    Copyright (C) 2012 Chad Humphries, David Chelimsky, Myron Marston
+    Copyright (C) 2009 Chad Humphries, David Chelimsky
+    Copyright (C) 2006 David Chelimsky, The RSpec Development Team
+    Copyright (C) 2005 Steven Baker
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
