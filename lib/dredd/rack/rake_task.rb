@@ -1,78 +1,96 @@
-require 'rake'
-
-# Add Rainbow to the app dependencies. That's optional, but the result is worth it.
 require 'rainbow'
+require 'rake'
+require 'rake/tasklib'
 
-# Validate an API against its API blueprint
+# This class is heavily inspired in RSpec::Core::RakeTask,
+# which is part of the RSpec::Core and is licenced as follows:
 #
-# The API blueprints are expected to be stored in `doc/` and
-# have the `.apib` or `.apib.md` extension. (The last one ensures
-# that the blueprints are rendered as HTML on Github.)
+# Copyright (c) 2012 Chad Humphries, David Chelimsky, Myron Marston
+# Copyright (c) 2009 Chad Humphries, David Chelimsky
+# Copyright (c) 2006 David Chelimsky, The RSpec Development Team
+# Copyright (c) 2005 Steven Baker
 #
-# The 'blueprint:verify' task depends on Dredd being installed but
-# does detect automatically if it is not and provides instructions
-# to install it.
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
 #
-# The task also depends on the API being served at the API_HOST URL.
-# It also detects when the connection is impossible and suggests to
-# set the API_HOST environment variable and start the API server.
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+# CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+# TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
-# Usage:
+# See https://github.com/rspec/rspec-core/blob/v3.2.1/lib/rspec/core/rake_task.rb
 #
-#     API_HOST=http://localhost:4567 rake 'blueprint:verify'
-#
-# Returns nothing but does abort the rake tasks suite if validation fails.
-namespace :blueprint do
-  require 'capybara'
-  desc 'Verify the API blueprint accuracy'
-  task :verify do
-    # check if the dredd blueprint testing tool is available
-    `which dredd`
-    if $?.exitstatus != 0
-      abort <<-eos.gsub /^( |\t)+/, ""
+# The modified code is part of Dredd::Rack, please see
+# https://github.com/gonzalo-bulnes/dredd-rack for copyright and license details.
 
-        The #{Rainbow('dredd').red} blueprint testing tool is not available.
-        You may want to install it in order to validate the API blueprints.
+module Dredd
+  module Rack
 
-        Try #{Rainbow('`npm install dredd --global`').yellow} (use `sudo` if necessary)
-        or see https://github.com/apiaryio/dredd for instructions.
+    # A clonable Rake task powered by a Dredd::Rack::Runner
+    #
+    # Examples:
+    #
+    #    require 'dredd/rack'
+    #    Dredd::Rack::RakeTask.new # run it with `rake dredd`
+    #
+    #    # Customize the name or description of the Rake task:
+    #    namespace :blueprint do
+    #      Dredd::Rack::RakeTask.new(:verify, 'Verify an API complies with its blueprint')
+    #    end
+    #    # run it with `rake blueprint:verify`
+    #
+    #    # Customize the API endpoint or runner options,
+    #    # use `nil` to keep the default Rake task name or description:
+    #    Dredd::Rack::RakeTask.new(:anderson, nil, 'http://localhost:4567') do |options|
+    #      options.paths_to_blueprints 'blueprints/*.apib blueprints/*.apib.md'
+    #      options.level silly
+    #      options.silent!
+    #    end
+    #    # run with `rake anderson` to get your Sinatra API judged
+    #
+    class RakeTask  < ::Rake::TaskLib
 
-      eos
+      # Return the task's name
+      attr_reader :name
+
+      # Return the task's description
+      attr_reader :description
+
+      # Return the Dredd::Rack::Runner instance
+      attr_reader :dredd_runner
+
+      # Define a task with a custom name and arguments
+      #
+      # The first argument is the name of the task.
+      #
+      # Creates a Dredd::Rack::Runner instance with the other
+      # arguments and eventually the block that were provided.
+      # Running the task does run Dredd and return its exit status.
+      #
+      # args - the Symbol for the task and the runner arguments
+      # task_block - an optional block to configure the runner
+      #
+      def initialize(*args, &task_block)
+        @name = args.shift || :dredd
+        @description = args.shift || 'Run Dredd::Rack API blueprint verification'
+
+        @dredd_runner = Dredd::Rack::Runner.new(args.slice(0), &task_block)
+
+        desc description
+        task name, args do
+          dredd_runner.run
+        end
+      end
     end
-
-    puts <<-eos.gsub /^( |\t)+/, ""
-
-      #{Rainbow('Verifiy the API conformance against its blueprint.').blue}
-    eos
-
-    unless api_host  = ENV['API_HOST']
-      server = Capybara::Server.new(app)
-      server.boot
-
-      api_host =  'http://' + server.host + ':' + server.port.to_s
-    end
-
-    command = "dredd doc/*.apib doc/*.apib.md #{api_host}"
-    puts <<-eos.gsub /^( |\t)+/, ""
-      #{command}
-
-    eos
-    success = system(command)
-    exit_status = $?.exitstatus
-
-    # display a hint when the server may be down
-    unless success || exit_status != 8
-      puts <<-eos.gsub /^( |\t)+/, ""
-
-        #{Rainbow("Something went wrong.").red}
-        Maybe your API is not being served at #{api_host}?
-
-        Note that specifying a different host is easy:
-        #{Rainbow('`rake blueprint:verify API_HOST=http://localhost:4567`').yellow}
-
-      eos
-    end
-
-    abort unless exit_status == 0
   end
 end

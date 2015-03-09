@@ -31,6 +31,9 @@ module Dredd
       # Store the Dredd command line options
       attr_accessor :command_parts
 
+      # Return the URL of the API endpoint as a String
+      attr_reader :api_endpoint
+
       # Initialize a runner instance
       #
       # The API endpoint can be local or remote.

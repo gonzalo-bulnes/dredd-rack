@@ -2,6 +2,10 @@ require 'spec_helper'
 
 describe Dredd::Rack::Runner do
 
+  it 'responds to :api_endpoint', public: true do
+    expect(subject).to respond_to :api_endpoint
+  end
+
   it 'responds to :command', public: true do
     expect(subject).to respond_to :command
   end
