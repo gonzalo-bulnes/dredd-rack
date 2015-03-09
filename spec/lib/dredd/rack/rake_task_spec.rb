@@ -58,4 +58,59 @@ describe Dredd::Rack::RakeTask do
       end
     end
   end
+
+  context 'when invoked' do
+
+    before(:each) do
+      pending "I don't know how to stub `$?` so I can run `Rake::Task[subject.name].invoke`"
+      #allow($?).to receive(:exitstatus).and_return(0) # breaks the test suite
+    end
+
+    it 'runs Dredd', public: true do
+      expect(Kernel).to receive(:system).with(subject.dredd_runner.command)
+      #Rake::Task[subject.name].invoke
+    end
+
+    context 'when Dredd is not available' do
+
+      it 'exits with status 127', public: true do
+        subject = Dredd::Rack::RakeTask.new(nil, nil, 'http://unresponsive')
+
+        expect(Kernel).to receive(:exit).with(127)
+        #Rake::Task[subject.name].invoke
+      end
+
+      it 'outputs a failure message', public: true do
+        subject = Dredd::Rack::RakeTask.new(nil, nil, 'http://unresponsive')
+        message = double()
+        # TODO: define output
+
+        expect(subject).to receive(:failure_message).with(127).and_return(message)
+        expect(output).to receive(:puts).with(message)
+
+        #Rake::Task[subject.name].invoke
+      end
+    end
+
+    context 'with an unresponsive API' do
+
+      it 'exits with status 8', public: true do
+        subject = Dredd::Rack::RakeTask.new(nil, nil, 'http://unresponsive')
+
+        expect(Kernel).to receive(:exit).with(8)
+        #Rake::Task[subject.name].invoke
+      end
+
+      it 'outputs a failure message', public: true do
+        subject = Dredd::Rack::RakeTask.new(nil, nil, 'http://unresponsive')
+        message = double()
+        # TODO: define output
+
+        expect(subject).to receive(:failure_message).with(8).and_return(message)
+        expect(output).to receive(:puts).with(message)
+
+        #Rake::Task[subject.name].invoke
+      end
+    end
+  end
 end
