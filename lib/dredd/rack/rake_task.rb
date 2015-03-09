@@ -88,9 +88,61 @@ module Dredd
 
         desc description
         task name, args do
-          dredd_runner.run
+          puts init_message(dredd_runner.command)
+          success = dredd_runner.run
+
+          unless success
+            puts failure_message($?.exitstatus)
+            exit $?.exitstatus
+          end
         end
       end
+
+      private
+
+        # Generate a failure message as helpful as possible
+        #
+        # exit_status - the Dredd exit status
+        #
+        # Returns the message String formatted for terminal print
+        def failure_message(exit_status)
+          case exit_status
+          when 127
+            <<-eos.gsub /^( |\t)+/, ""
+
+              The #{Rainbow('dredd').red} blueprint testing tool is not available.
+              You may want to install it in order to validate the API blueprints.
+
+              Try #{Rainbow('`npm install dredd --global`').yellow} (use `sudo` if necessary)
+              or see https://github.com/apiaryio/dredd for instructions.
+
+            eos
+          when 8
+            <<-eos.gsub /^( |\t)+/, ""
+
+              #{Rainbow("Something went wrong.").red}
+              Maybe your API is not being served at #{dredd_runner.api_endpoint} ?
+
+              See https://github.com/gonzalo-bulnes/dredd-rack for more information.
+
+            eos
+          end
+        end
+
+        # Generate an init message for quick task identification
+        #
+        # command - the command to be run
+        #
+        # Returns the message String formatted for terminal print
+        def init_message(command)
+          <<-eos.gsub /^( |\t)+/, ""
+
+            #{Rainbow('Verifiy the API conformance against its blueprint.').blue}
+            #{command}
+
+          eos
+        end
+
     end
   end
 end
