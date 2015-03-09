@@ -8,53 +8,59 @@ Convenient API blueprint testing with [Dredd][dredd] for Rack applications.
 
   [dredd]: https://github.com/apiaryio/dredd
 
-Usage
------
+Installation
+------------
 
-Add the gem to your Gemfile:
+Add the gem to your `Gemfile`:
 
 ```ruby
-gem 'dredd-rack', '~> 1.0'
+# Gemfile
+
+gem 'dredd-rack', '~> 1.0' # see semver.org
 ```
 
-Require your app and add the Dredd::Rack rake task to your Rakefile:
+Then add the rake task to your `Rakefile`:
 
 ```ruby
 # Rakefile
 
-# ...
-
-# Specify the application to test:
-#
-# Example:
-#
-#     require 'dredd-rack-example'
-#     def app() Dredd::Rack::Example end
-#
-# Returns the application to test
-require 'your_app'
-def app() YourApp end
-
-# require the Dredd::Rack rake task
 require 'dredd/rack'
+Dredd::Rack::RakeTask.new # run with `rake dredd`
 
-# Optionally add the API blueprint verification to the default test suite
-# task :default => [:spec, 'blueprint:verify']
+# Optionally add Dredd to your default test suite:
+# task default: [:spec, :dredd]
 ```
 
-Run the API blueprint verification:
+Usage
+-----
 
-```bash
-rake blueprint:verify
+The `Dredd::Rack::RakeTask` can be used to define custom tasks:
 
-# or specify a remote server:
-#API_HOST=http://api.example.com rake blueprint:verify
+```ruby
+# Rakefile
+
+require 'dredd/rack'
+
+# run with `rake anderson`
+Dredd::Rack::RakeTask.new(:anderson)
+
+# run with `rake blueprint:verify:machines`
+namespace :blueprint do
+  namespace :verify do
+    Dredd::Rack::RakeTask.new(:machines, 'Verify the machines API blueprint', 'http://machines.apiary.io') do |options|
+      options.paths_to_blueprints 'single_get.md'
+      options.only 'Machines > Machines collection > Get Machines'
+      options.color!
+    end
+    # runs `dredd single_get.md http://machines.apiary.io --only "Machines > Machines collection > Get Machines" --color`
+  end
+end
 ```
 
 Credits
 -------
 
-The Dredd::Rack::RakeTask is heavily inspired in the [RSpec::Core::RakeTask][rspec-core-raketask] to provide a custom Rake tasks factory. Credits for the RSpec::Core::RakeTask go to the RSpec Development Team.
+The `Dredd::Rack::RakeTask` is heavily inspired in the [`RSpec::Core::RakeTask`][rspec-core-raketask] to provide a custom Rake tasks factory. All credits for the `RSpec::Core::RakeTask` go to the RSpec Development Team.
 
   [rspec-core-raketask]: https://github.com/rspec/rspec-core/blob/v3.2.1/lib/rspec/core/rake_task.rb
 
