@@ -85,7 +85,7 @@ describe Dredd::Rack::Runner do
 
         expect(subject.command).to match /http:\/\/localhost:4567/
         expect(subject.command).to match /blueprints\/\*\.apib doc\/\*\.apib/
-        expect(subject.command).to match /--level silly/
+        expect(subject.command).to match /--level \"silly\"/
         expect(subject.command).to match /--no-color/
 
         expect(subject.command).not_to match /http:\/\/localhost:3000/

@@ -105,7 +105,7 @@ module Dredd
 
           option_flag = name.to_s.gsub('_', '-').gsub('!', '').prepend('--')
           command_parts = self.command_parts.push option_flag
-          command_parts = self.command_parts.push args.slice(0).to_s if SINGLE_ARGUMENT_OPTIONS.include? name
+          command_parts = self.command_parts.push "\"#{args.slice(0).to_s}\"" if SINGLE_ARGUMENT_OPTIONS.include? name
           self
         end
 
