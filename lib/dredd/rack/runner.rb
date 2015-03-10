@@ -1,3 +1,5 @@
+require 'capybara'
+
 module Dredd
   module Rack
 
@@ -5,15 +7,20 @@ module Dredd
     #
     # Usage:
     #
-    #    # run `dredd doc/*.apib doc/*.apib.md http://localhost:3000 --level warning --dry-run`
+    #    # run `dredd doc/*.apib doc/*.apib.md http://localhost:XXXX --level warning --dry-run`
+    #    # You don't need to start any server, Dredd::Rack does it for you.
     #    dredd = Dredd::Rack::Runner.new
     #    dredd.level(:warning).dry_run!.run
     #
+    #    # You can specify an API endpoint to perform a remote validation.
+    #    # Do not forget to serve the API at the given URL!
+    #    #
+    #    # runs `dredd blueprints/*.md doc/*.md https://api.example.com --no-color`
     #    anderson = Anderson::Rack::Runner.new 'https://api.example.com' do |options|
     #      options.paths_to_blueprints 'blueprints/*.md', 'doc/*.md'
     #      options.no_color!
     #    end
-    #    anderson.run # runs `dredd blueprints/*.md doc/*.md https://api.example.com --no-color`
+    #    anderson.run
     #
     class Runner
 
@@ -31,6 +38,9 @@ module Dredd
       # Store the Dredd command line options
       attr_accessor :command_parts
 
+      # Return the API endpoint
+      attr_reader :api_endpoint
+
       # Initialize a runner instance
       #
       # The API endpoint can be local or remote.
@@ -38,11 +48,9 @@ module Dredd
       # api_endpoint - the API URL as a String
       #
       def initialize(api_endpoint=nil)
-        raise ArgumentError, 'invalid API endpoint' if api_endpoint == ''
-
         @dredd_command = 'dredd'
         @paths_to_blueprints = 'doc/*.apib doc/*.apib.md'
-        @api_endpoint = api_endpoint || 'http://localhost:3000'
+        @api_endpoint = api_endpoint || ''
         @command_parts = []
 
         yield self if block_given?
@@ -69,7 +77,11 @@ module Dredd
       #
       # Returns true if the Dredd exit status is zero, false instead.
       def run
-        Kernel.system(command) if command_valid?
+
+        if command_valid?
+          start_server! unless api_remote?
+          Kernel.system(command)
+        end
       end
 
       # Ensure that the runner does respond_to? its option methods
@@ -83,8 +95,18 @@ module Dredd
 
       private
 
+        def api_remote?
+          !@api_endpoint.empty?
+        end
+
         def command_valid?
           command.has_at_least_two_arguments?
+        end
+
+        def start_server!
+          server = Capybara::Server.new(Dredd::Rack.app)
+          server.boot
+          @api_endpoint = "http://#{server.host}:#{server.port.to_s}"
         end
 
         # Private: Define as many setter methods as there are Dredd options

@@ -2,6 +2,10 @@ require 'spec_helper'
 
 describe Dredd::Rack::Runner do
 
+  it 'responds to :api_endpoint', public: true do
+    expect(subject).to respond_to :api_endpoint
+  end
+
   it 'responds to :command', public: true do
     expect(subject).to respond_to :command
   end
@@ -56,10 +60,6 @@ describe Dredd::Rack::Runner do
   end
 
   describe '#initialize', public: true do
-
-    it 'raises ArgumentError' do
-      expect{ Dredd::Rack::Runner.new('') }.to raise_error ArgumentError, 'invalid API endpoint'
-    end
 
     context 'with an API endpoint as argument' do
 
@@ -116,13 +116,50 @@ describe Dredd::Rack::Runner do
 
     context 'when the command is valid' do
 
+      before(:each) do
+        allow(subject).to receive(:command_valid?).and_return(true)
+      end
+
       it 'runs Dredd!' do
         command = double()
         allow(subject).to receive(:command).and_return(command)
-        allow(subject).to receive(:command_valid?).and_return(true)
 
         expect(Kernel).to receive(:system).with(command)
         subject.run
+      end
+
+      context 'when configured to test the API locally' do
+
+        before(:each) do
+          allow(subject).to receive(:api_remote?).and_return(false)
+        end
+
+        context 'with Dredd::Rack.app properly configured' do
+
+          before(:each) do
+            @app_under_test = double()
+            allow(Dredd::Rack).to receive(:app).and_return(@app_under_test)
+
+            @capybara_server = double()
+            allow(@capybara_server).to receive(:new).and_return(@capybara_server)
+            allow(@capybara_server).to receive(:host).and_return('localhost')
+            allow(@capybara_server).to receive(:port).and_return('4567')
+            allow(Kernel).to receive(:system)
+
+            stub_const("Capybara::Server", @capybara_server)
+          end
+
+          it 'creates a Capybara::Server instance and serves the API' do
+            expect(@capybara_server).to receive(:new).with(@app_under_test)
+            expect(@capybara_server).to receive(:boot)
+            subject.run
+          end
+
+          it 'gets its API endpoint from the Capybara::Server instance' do
+            allow(@capybara_server).to receive(:boot)
+            expect { subject.run }.to change { subject.api_endpoint }.to("http://#{@capybara_server.host}:#{@capybara_server.port.to_s}")
+          end
+        end
       end
     end
   end
