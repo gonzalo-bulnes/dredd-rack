@@ -1,7 +1,7 @@
 require 'rake'
-
-# Add Rainbow to the app dependencies. That's optional, but the result is worth it.
 require 'rainbow'
+
+require 'dredd/rack'
 
 # Validate an API against its API blueprint
 #
@@ -13,9 +13,9 @@ require 'rainbow'
 # does detect automatically if it is not and provides instructions
 # to install it.
 #
-# The task also depends on the API being served at the API_HOST URL.
-# It also detects when the connection is impossible and suggests to
-# set the API_HOST environment variable and start the API server.
+# The task also depends on the API being served at the API_HOST URL,
+# detects when the connection is impossible and suggests to set
+# the API_HOST environment variable and start the API server.
 #
 # Usage:
 #
@@ -45,19 +45,13 @@ namespace :blueprint do
       #{Rainbow('Verifiy the API conformance against its blueprint.').blue}
     eos
 
-    unless api_host  = ENV['API_HOST']
-      server = Capybara::Server.new(app)
-      server.boot
+    dredd = Dredd::Rack::Runner.new(ENV['API_HOST'])
 
-      api_host =  'http://' + server.host + ':' + server.port.to_s
-    end
-
-    command = "dredd doc/*.apib doc/*.apib.md #{api_host}"
     puts <<-eos.gsub /^( |\t)+/, ""
-      #{command}
+      #{dredd.command}
 
     eos
-    success = system(command)
+    success = dredd.run
     exit_status = $?.exitstatus
 
     # display a hint when the server may be down
