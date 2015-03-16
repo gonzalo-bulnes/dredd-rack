@@ -1,8 +1,6 @@
 require 'rake'
 require 'rainbow'
 
-require 'dredd/rack'
-
 # Validate an API against its API blueprint
 #
 # The API blueprints are expected to be stored in `doc/` and
@@ -29,44 +27,68 @@ namespace :blueprint do
     # check if the dredd blueprint testing tool is available
     `which dredd`
     if $?.exitstatus != 0
-      abort <<-eos.gsub /^( |\t)+/, ""
-
-        The #{Rainbow('dredd').red} blueprint testing tool is not available.
-        You may want to install it in order to validate the API blueprints.
-
-        Try #{Rainbow('`npm install dredd --global`').yellow} (use `sudo` if necessary)
-        or see https://github.com/apiaryio/dredd for instructions.
-
-      eos
+      abort Dredd::Rack::RakeTask.dredd_not_available_message
     end
 
-    puts <<-eos.gsub /^( |\t)+/, ""
-
-      #{Rainbow('Verifiy the API conformance against its blueprint.').blue}
-    eos
+    puts Dredd::Rack::RakeTask.starting_message
 
     dredd = Dredd::Rack::Runner.new(ENV['API_HOST'])
 
-    puts <<-eos.gsub /^( |\t)+/, ""
-      #{dredd.command}
+    puts Dredd::Rack::RakeTask.command_message(dredd)
 
-    eos
     success = dredd.run
     exit_status = $?.exitstatus
 
     # display a hint when the server may be down
     unless success || exit_status != 8
-      puts <<-eos.gsub /^( |\t)+/, ""
-
-        #{Rainbow("Something went wrong.").red}
-        Maybe your API is not being served at #{api_host}?
-
-        Note that specifying a different host is easy:
-        #{Rainbow('`rake blueprint:verify API_HOST=http://localhost:4567`').yellow}
-
-      eos
+      puts Dredd::Rack::RakeTask.connection_error_message
     end
 
     abort unless exit_status == 0
+  end
+end
+
+module Dredd
+  module Rack
+    class RakeTask
+
+      def self.command_message(runner)
+        <<-eos.gsub /^( |\t)+/, ""
+          #{runner.command}
+
+        eos
+      end
+
+      def self.connection_error_message
+        <<-eos.gsub /^( |\t)+/, ""
+
+          #{Rainbow("Something went wrong.").red}
+          Maybe your API is not being served at #{api_host}?
+
+          Note that specifying a different host is easy:
+          #{Rainbow('`rake blueprint:verify API_HOST=http://localhost:4567`').yellow}
+
+        eos
+      end
+
+      def self.dredd_not_available_message
+        <<-eos.gsub /^( |\t)+/, ""
+
+          The #{Rainbow('dredd').red} blueprint testing tool is not available.
+          You may want to install it in order to validate the API blueprints.
+
+          Try #{Rainbow('`npm install dredd --global`').yellow} (use `sudo` if necessary)
+          or see https://github.com/apiaryio/dredd for instructions.
+
+        eos
+      end
+
+      def self.starting_message
+        <<-eos.gsub /^( |\t)+/, ""
+
+          #{Rainbow('Verify the API conformance against its blueprint.').blue}
+        eos
+      end
+    end
   end
 end

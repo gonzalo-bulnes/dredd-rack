@@ -3,8 +3,7 @@ Dredd::Rack
 
 [![Build Status](https://travis-ci.org/gonzalo-bulnes/dredd-rack.svg?branch=master)](https://travis-ci.org/gonzalo-bulnes/dredd-rack)
 [![Code Climate](https://codeclimate.com/github/gonzalo-bulnes/dredd-rack.svg)](https://codeclimate.com/github/gonzalo-bulnes/dredd-rack)
-[![Dredd Reference Version](https://img.shields.io/badge/dredd_reference_version-0.4.1-green.svg
-)](https://github.com/apiaryio/dredd)
+[![Dredd Reference Version](https://img.shields.io/badge/dredd_reference_version-0.4.1-green.svg)](https://github.com/apiaryio/dredd)
 [![Inline docs](http://inch-ci.org/github/gonzalo-bulnes/dredd-rack.svg?branch=master)](http://inch-ci.org/github/gonzalo-bulnes/dredd-rack)
 
 This gem provides a [Dredd][dredd] runner and a `blueprint:verify` rake task to make [API blueprint][blueprint] testing convenient for Rack applications. When verifying blueprints locally, an application server is automatically set up, without need of any manual intervention.
