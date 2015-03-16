@@ -24,11 +24,7 @@ namespace :blueprint do
   require 'capybara'
   desc 'Verify the API blueprint accuracy'
   task :verify do
-    # check if the dredd blueprint testing tool is available
-    `which dredd`
-    if $?.exitstatus != 0
-      abort Dredd::Rack::RakeTask.dredd_not_available_message
-    end
+    abort Dredd::Rack::RakeTask.dredd_not_available_message unless Dredd::Rack::RakeTask.dredd_available?
 
     puts Dredd::Rack::RakeTask.starting_message
 
@@ -39,10 +35,7 @@ namespace :blueprint do
     success = dredd.run
     exit_status = $?.exitstatus
 
-    # display a hint when the server may be down
-    unless success || exit_status != 8
-      puts Dredd::Rack::RakeTask.connection_error_message
-    end
+    puts Dredd::Rack::RakeTask.connection_error_message(dredd) unless success if Dredd::Rack::RakeTask.dredd_connection_error?(exit_status)
 
     abort unless exit_status == 0
   end
@@ -52,6 +45,15 @@ module Dredd
   module Rack
     class RakeTask
 
+      def self.dredd_available?
+        `which dredd`
+        $?.exitstatus == 0
+      end
+
+      def self.dredd_connection_error?(exit_status)
+        exit_status == 8
+      end
+
       def self.command_message(runner)
         <<-eos.gsub /^( |\t)+/, ""
           #{runner.command}
@@ -59,11 +61,11 @@ module Dredd
         eos
       end
 
-      def self.connection_error_message
+      def self.connection_error_message(runner)
         <<-eos.gsub /^( |\t)+/, ""
 
           #{Rainbow("Something went wrong.").red}
-          Maybe your API is not being served at #{api_host}?
+          Maybe your API is not being served at #{runner.api_endpoint}?
 
           Note that specifying a different host is easy:
           #{Rainbow('`rake blueprint:verify API_HOST=http://localhost:4567`').yellow}
