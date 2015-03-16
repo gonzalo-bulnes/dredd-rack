@@ -1,54 +1,85 @@
 Dredd::Rack
 ===========
 
-[![Dredd Reference Version](https://img.shields.io/badge/dredd_reference_version-0.4.1-blue.svg
-)](https://github.com/apiaryio/dredd)
+[![Build Status](https://travis-ci.org/gonzalo-bulnes/dredd-rack.svg?branch=master)](https://travis-ci.org/gonzalo-bulnes/dredd-rack)
+[![Code Climate](https://codeclimate.com/github/gonzalo-bulnes/dredd-rack.svg)](https://codeclimate.com/github/gonzalo-bulnes/dredd-rack)
+[![Dredd Reference Version](https://img.shields.io/badge/dredd_reference_version-0.4.1-green.svg)](https://github.com/apiaryio/dredd)
+[![Inline docs](http://inch-ci.org/github/gonzalo-bulnes/dredd-rack.svg?branch=master)](http://inch-ci.org/github/gonzalo-bulnes/dredd-rack)
 
-Convenient API blueprint testing with [Dredd][dredd] for Rack applications.
+This gem provides a [Dredd][dredd] runner and a `blueprint:verify` rake task to make [API blueprint][blueprint] testing convenient for Rack applications. When verifying blueprints locally, an application server is automatically set up, without need of any manual intervention.
+
+Besides being convenient, that allows to use the API blueprints as acceptance test suites to practice [BDD][rspec-book] with Dredd and RSpec, for example, while clients developers use [Apiary][apiary] as a mock server.
 
   [dredd]: https://github.com/apiaryio/dredd
+  [blueprint]: https://apiblueprint.org/
+  [rspec-book]: https://pragprog.com/book/achbd/the-rspec-book
+  [apiary]: http://apiary.io
 
-Usage
------
+Installation
+------------
 
-Add the gem to your Gemfile:
+Add the gem to your `Gemfile`:
 
 ```ruby
-gem 'dredd-rack', '~> 1.0'
+# Gemfile
+
+gem 'dredd-rack', '~> 1.0' # see semver.org
 ```
 
-Require your app and add the Dredd::Rack rake task to your Rakefile:
+Getting Started
+---------------
+
+### Dredd::Rack::Runner
+
+_To do._
+
+
+### Rake task
+
+Use the `dredd` rake task from your `Rakefile`:
 
 ```ruby
 # Rakefile
 
-# ...
-
-# Specify the application to test:
-#
-# Example:
-#
-#     require 'dredd-rack-example'
-#     def app() Dredd::Rack::Example end
-#
-# Returns the application to test
-require 'your_app'
-def app() YourApp end
-
-# require the Dredd::Rack rake task
 require 'dredd/rack'
 
+# Configure Dredd::Rack to automatically set a server up for your application
+Dredd::Rack.app Sinatra::Application # or the name of your modular-style app, or Rails app
+
+# That's all!
+
 # Optionally add the API blueprint verification to the default test suite
-# task :default => [:spec, 'blueprint:verify']
+# task :default => [:spec, :dredd]
 ```
 
-Run the API blueprint verification:
+Run the API blueprint verification locally:
 
 ```bash
-rake blueprint:verify
+rake dredd
 
 # or specify a remote server:
 #API_HOST=http://api.example.com rake blueprint:verify
+```
+
+Usage
+-----
+
+### Custom rake task name or description
+
+You can also define a custom rake task name or description:
+
+```ruby
+# Rakefile
+
+require 'dredd/rack'
+
+# Configure Dredd::Rack to automatically set a server up for your application
+Dredd::Rack.app Sinatra::Application # or the name of your modular-style app, or Rails app
+
+namespace :blueprint do
+  desc 'Verify an API complies with its blueprint'
+  Dredd::Rack::RakeTask.new(:verify)
+end
 ```
 
 License
