@@ -1,33 +1,52 @@
-require 'rake'
-require 'rainbow'
-
-# Validate an API against its API blueprint
-#
-# The API blueprints are expected to be stored in `doc/` and
-# have the `.apib` or `.apib.md` extension. (The last one ensures
-# that the blueprints are rendered as HTML on Github.)
-#
-# The 'dredd' task depends on Dredd being installed but
-# does detect automatically if it is not and provides instructions
-# to install it.
-#
-# The task also depends on the API being served at the API_HOST URL,
-# detects when the connection is impossible and suggests to set
-# the API_HOST environment variable and start the API server.
-#
-# Usage:
-#
-#     API_HOST=http://localhost:4567 rake 'dredd'
-#
-# Returns nothing but does abort the rake tasks suite if validation fails.
 require 'capybara'
-desc 'Verify the API blueprint accuracy'
-task :dredd do
+require 'rainbow'
+require 'rake'
+require 'rake/tasklib'
+
+module Dredd
+  module Rack
+
+    # A clonable Rake task powered by a Dredd::Rack::Runner
+    #
+    # Examples:
+    #
+    #    require 'dredd/rack'
+    #    Dredd::Rack::RakeTask.new # run it with `rake dredd`
+    #
+    #    # Customize the name or description of the Rake task:
+    #    namespace :blueprint do
+    #      desc 'Verify an API complies with its blueprint'
+    #      Dredd::Rack::RakeTask.new(:verify)
+    #    end
+    #    # run it with `rake blueprint:verify`
+    #
+    class RakeTask < ::Rake::TaskLib
+
+      # Return the task's name
+      attr_reader :name
+
+      # Return the task's description
+      attr_reader :description
+
+      # Return the Dredd::Rack::Runner instance
+      attr_reader :runner
+
+      # Define a task with a custom name, arguments and description
+      def initialize(*args)
+        @name = args.shift || :dredd
+        @description = 'Run Dredd::Rack API blueprint verification'
+        @runner = Dredd::Rack::Runner.new(ENV['API_HOST'])
+
+        desc description unless ::Rake.application.last_comment
+        task name, args do
+          run_task(runner)
+        end
+      end
+
+      def run_task(runner)
   abort Dredd::Rack::RakeTask.dredd_not_available_message unless Dredd::Rack::RakeTask.dredd_available?
 
   puts Dredd::Rack::RakeTask.starting_message
-
-  runner = Dredd::Rack::Runner.new(ENV['API_HOST'])
 
   puts Dredd::Rack::RakeTask.command_message(runner)
 
@@ -37,11 +56,7 @@ task :dredd do
   puts Dredd::Rack::RakeTask.connection_error_message(runner) unless success if Dredd::Rack::RakeTask.dredd_connection_error?(exit_status)
 
   abort unless exit_status == 0
-end
-
-module Dredd
-  module Rack
-    class RakeTask
+      end
 
       def self.dredd_available?
         `which dredd`

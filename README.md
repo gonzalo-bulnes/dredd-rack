@@ -26,8 +26,8 @@ Add the gem to your `Gemfile`:
 gem 'dredd-rack', '~> 1.0' # see semver.org
 ```
 
-Usage
------
+Getting Started
+---------------
 
 ### Dredd::Rack::Runner
 
@@ -59,6 +59,27 @@ rake dredd
 
 # or specify a remote server:
 #API_HOST=http://api.example.com rake blueprint:verify
+```
+
+Usage
+-----
+
+### Custom rake task name or description
+
+You can also define a custom rake task name or description:
+
+```ruby
+# Rakefile
+
+require 'dredd/rack'
+
+# Configure Dredd::Rack to automatically set a server up for your application
+Dredd::Rack.app Sinatra::Application # or the name of your modular-style app, or Rails app
+
+namespace :blueprint do
+  desc 'Verify an API complies with its blueprint'
+  Dredd::Rack::RakeTask.new(:verify)
+end
 ```
 
 License
