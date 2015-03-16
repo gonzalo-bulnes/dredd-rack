@@ -44,68 +44,68 @@ module Dredd
       end
 
       def run_task(runner)
-  abort dredd_not_available_message unless dredd_available?
+        abort dredd_not_available_message unless dredd_available?
 
-  puts starting_message
+        puts starting_message
 
-  puts command_message(runner)
+        puts command_message(runner)
 
-  success = runner.run
-  exit_status = $?.exitstatus
+        success = runner.run
+        exit_status = $?.exitstatus
 
-  puts connection_error_message(runner) unless success if dredd_connection_error?(exit_status)
+        puts connection_error_message(runner) unless success if dredd_connection_error?(exit_status)
 
-  abort unless exit_status == 0
+        abort unless exit_status == 0
       end
 
       private
 
-      def dredd_available?
-        `which dredd`
-        $?.exitstatus == 0
-      end
+        def dredd_available?
+          `which dredd`
+          $?.exitstatus == 0
+        end
 
-      def dredd_connection_error?(exit_status)
-        exit_status == 8
-      end
+        def dredd_connection_error?(exit_status)
+          exit_status == 8
+        end
 
-      def command_message(runner)
-        <<-eos.gsub /^( |\t)+/, ""
-          #{runner.command}
+        def command_message(runner)
+          <<-eos.gsub /^( |\t)+/, ""
+            #{runner.command}
 
-        eos
-      end
+          eos
+        end
 
-      def connection_error_message(runner)
-        <<-eos.gsub /^( |\t)+/, ""
+        def connection_error_message(runner)
+          <<-eos.gsub /^( |\t)+/, ""
 
-          #{Rainbow("Something went wrong.").red}
-          Maybe your API is not being served at #{runner.api_endpoint}?
+            #{Rainbow("Something went wrong.").red}
+            Maybe your API is not being served at #{runner.api_endpoint}?
 
-          Note that specifying a different host is easy:
-          #{Rainbow('`rake blueprint:verify API_HOST=http://localhost:4567`').yellow}
+            Note that specifying a different host is easy:
+            #{Rainbow('`rake blueprint:verify API_HOST=http://localhost:4567`').yellow}
 
-        eos
-      end
+          eos
+        end
 
-      def dredd_not_available_message
-        <<-eos.gsub /^( |\t)+/, ""
+        def dredd_not_available_message
+          <<-eos.gsub /^( |\t)+/, ""
 
-          The #{Rainbow('dredd').red} blueprint testing tool is not available.
-          You may want to install it in order to validate the API blueprints.
+            The #{Rainbow('dredd').red} blueprint testing tool is not available.
+            You may want to install it in order to validate the API blueprints.
 
-          Try #{Rainbow('`npm install dredd --global`').yellow} (use `sudo` if necessary)
-          or see https://github.com/apiaryio/dredd for instructions.
+            Try #{Rainbow('`npm install dredd --global`').yellow} (use `sudo` if necessary)
+            or see https://github.com/apiaryio/dredd for instructions.
 
-        eos
-      end
+          eos
+        end
 
-      def starting_message
-        <<-eos.gsub /^( |\t)+/, ""
+        def starting_message
+          <<-eos.gsub /^( |\t)+/, ""
 
-          #{Rainbow('Verify the API conformance against its blueprint.').blue}
-        eos
-      end
+            #{Rainbow('Verify the API conformance against its blueprint.').blue}
+          eos
+        end
     end
   end
 end
