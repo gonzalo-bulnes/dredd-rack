@@ -44,37 +44,39 @@ module Dredd
       end
 
       def run_task(runner)
-  abort Dredd::Rack::RakeTask.dredd_not_available_message unless Dredd::Rack::RakeTask.dredd_available?
+  abort dredd_not_available_message unless dredd_available?
 
-  puts Dredd::Rack::RakeTask.starting_message
+  puts starting_message
 
-  puts Dredd::Rack::RakeTask.command_message(runner)
+  puts command_message(runner)
 
   success = runner.run
   exit_status = $?.exitstatus
 
-  puts Dredd::Rack::RakeTask.connection_error_message(runner) unless success if Dredd::Rack::RakeTask.dredd_connection_error?(exit_status)
+  puts connection_error_message(runner) unless success if dredd_connection_error?(exit_status)
 
   abort unless exit_status == 0
       end
 
-      def self.dredd_available?
+      private
+
+      def dredd_available?
         `which dredd`
         $?.exitstatus == 0
       end
 
-      def self.dredd_connection_error?(exit_status)
+      def dredd_connection_error?(exit_status)
         exit_status == 8
       end
 
-      def self.command_message(runner)
+      def command_message(runner)
         <<-eos.gsub /^( |\t)+/, ""
           #{runner.command}
 
         eos
       end
 
-      def self.connection_error_message(runner)
+      def connection_error_message(runner)
         <<-eos.gsub /^( |\t)+/, ""
 
           #{Rainbow("Something went wrong.").red}
@@ -86,7 +88,7 @@ module Dredd
         eos
       end
 
-      def self.dredd_not_available_message
+      def dredd_not_available_message
         <<-eos.gsub /^( |\t)+/, ""
 
           The #{Rainbow('dredd').red} blueprint testing tool is not available.
@@ -98,7 +100,7 @@ module Dredd
         eos
       end
 
-      def self.starting_message
+      def starting_message
         <<-eos.gsub /^( |\t)+/, ""
 
           #{Rainbow('Verify the API conformance against its blueprint.').blue}
