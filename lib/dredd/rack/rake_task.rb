@@ -7,7 +7,7 @@ require 'rainbow'
 # have the `.apib` or `.apib.md` extension. (The last one ensures
 # that the blueprints are rendered as HTML on Github.)
 #
-# The 'blueprint:verify' task depends on Dredd being installed but
+# The 'dredd' task depends on Dredd being installed but
 # does detect automatically if it is not and provides instructions
 # to install it.
 #
@@ -17,28 +17,26 @@ require 'rainbow'
 #
 # Usage:
 #
-#     API_HOST=http://localhost:4567 rake 'blueprint:verify'
+#     API_HOST=http://localhost:4567 rake 'dredd'
 #
 # Returns nothing but does abort the rake tasks suite if validation fails.
-namespace :blueprint do
-  require 'capybara'
-  desc 'Verify the API blueprint accuracy'
-  task :verify do
-    abort Dredd::Rack::RakeTask.dredd_not_available_message unless Dredd::Rack::RakeTask.dredd_available?
+require 'capybara'
+desc 'Verify the API blueprint accuracy'
+task :dredd do
+  abort Dredd::Rack::RakeTask.dredd_not_available_message unless Dredd::Rack::RakeTask.dredd_available?
 
-    puts Dredd::Rack::RakeTask.starting_message
+  puts Dredd::Rack::RakeTask.starting_message
 
-    dredd = Dredd::Rack::Runner.new(ENV['API_HOST'])
+  runner = Dredd::Rack::Runner.new(ENV['API_HOST'])
 
-    puts Dredd::Rack::RakeTask.command_message(dredd)
+  puts Dredd::Rack::RakeTask.command_message(runner)
 
-    success = dredd.run
-    exit_status = $?.exitstatus
+  success = runner.run
+  exit_status = $?.exitstatus
 
-    puts Dredd::Rack::RakeTask.connection_error_message(dredd) unless success if Dredd::Rack::RakeTask.dredd_connection_error?(exit_status)
+  puts Dredd::Rack::RakeTask.connection_error_message(runner) unless success if Dredd::Rack::RakeTask.dredd_connection_error?(exit_status)
 
-    abort unless exit_status == 0
-  end
+  abort unless exit_status == 0
 end
 
 module Dredd

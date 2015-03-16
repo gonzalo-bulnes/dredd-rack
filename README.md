@@ -36,7 +36,7 @@ _To do._
 
 ### Rake task
 
-Configure _Dredd::Rack_ to use the `blueprint:verify` rake task from your `Rakefile`:
+Use the `dredd` rake task from your `Rakefile`:
 
 ```ruby
 # Rakefile
@@ -49,13 +49,13 @@ Dredd::Rack.app Sinatra::Application # or the name of your modular-style app, or
 # That's all!
 
 # Optionally add the API blueprint verification to the default test suite
-# task :default => [:spec, 'blueprint:verify']
+# task :default => [:spec, :dredd]
 ```
 
 Run the API blueprint verification locally:
 
 ```bash
-rake blueprint:verify
+rake dredd
 
 # or specify a remote server:
 #API_HOST=http://api.example.com rake blueprint:verify
