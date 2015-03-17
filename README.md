@@ -23,7 +23,7 @@ Add the gem to your `Gemfile`:
 ```ruby
 # Gemfile
 
-gem 'dredd-rack', '~> 1.0' # see semver.org
+gem 'dredd-rack', '~> 0.3.0' # see semver.org
 ```
 
 Getting Started
