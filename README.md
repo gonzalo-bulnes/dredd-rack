@@ -1,12 +1,14 @@
 Dredd::Rack
 ===========
-
+[![Gem Version](https://badge.fury.io/rb/dredd-rack.svg)](http://badge.fury.io/rb/dredd-rack)
 [![Build Status](https://travis-ci.org/gonzalo-bulnes/dredd-rack.svg?branch=master)](https://travis-ci.org/gonzalo-bulnes/dredd-rack)
 [![Code Climate](https://codeclimate.com/github/gonzalo-bulnes/dredd-rack.svg)](https://codeclimate.com/github/gonzalo-bulnes/dredd-rack)
 [![Dredd Reference Version](https://img.shields.io/badge/dredd_reference_version-0.4.1-green.svg)](https://github.com/apiaryio/dredd)
 [![Inline docs](http://inch-ci.org/github/gonzalo-bulnes/dredd-rack.svg?branch=master)](http://inch-ci.org/github/gonzalo-bulnes/dredd-rack)
 
-This gem provides a [Dredd][dredd] runner and a `blueprint:verify` rake task to make [API blueprint][blueprint] testing convenient for Rack applications. When verifying blueprints locally, an application server is automatically set up, without need of any manual intervention.
+> **DISCLAIMER**: This is an early version of Dredd::Rack, please be aware that is will not be stable until `v1.0.0`. At any moment, [feedback][issues] is more than welcome! : ) -- [GB][gonzalo-bulnes]
+
+This gem provides a [Dredd][dredd] runner and a `dredd` rake task to make [API blueprint][blueprint] testing convenient for Rack applications. When verifying blueprints locally, an application server is automatically set up, without need of any manual intervention.
 
 Besides being convenient, that allows to use the API blueprints as acceptance test suites to practice [BDD][rspec-book] with Dredd and RSpec, for example, while clients developers use [Apiary][apiary] as a mock server.
 
@@ -14,6 +16,8 @@ Besides being convenient, that allows to use the API blueprints as acceptance te
   [blueprint]: https://apiblueprint.org/
   [rspec-book]: https://pragprog.com/book/achbd/the-rspec-book
   [apiary]: http://apiary.io
+  [issues]: https://github.com/gonzalo-bulnes/dredd-rack/issues
+  [gonzalo-bulnes]: https://github.com/gonzalo-bulnes
 
 Installation
 ------------
@@ -23,7 +27,7 @@ Add the gem to your `Gemfile`:
 ```ruby
 # Gemfile
 
-gem 'dredd-rack', '~> 1.0' # see semver.org
+gem 'dredd-rack', '~> 0.3.0' # see semver.org
 ```
 
 Getting Started
