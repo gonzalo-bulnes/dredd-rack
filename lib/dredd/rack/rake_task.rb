@@ -32,13 +32,14 @@ module Dredd
       attr_reader :runner
 
       # Define a task with a custom name, arguments and description
-      def initialize(*args)
+      def initialize(*args, &task_block)
         @name = args.shift || :dredd
         @description = 'Run Dredd::Rack API blueprint verification'
         @runner = Dredd::Rack::Runner.new(ENV['API_HOST'])
 
         desc description unless ::Rake.application.last_comment
-        task name, args do
+        task name, *args do |task_args|
+          task_block.call(*[self, task_args].slice(0, task_block.arity)) if task_block
           run_task(runner)
         end
       end
