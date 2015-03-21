@@ -61,6 +61,11 @@ module Dredd
         ([@dredd_command, @paths_to_blueprints, @api_endpoint] + @command_parts).join(' ')
       end
 
+      # Configure the runner instance
+      def configure
+        yield self if block_given?
+      end
+
       # Define custom paths to blueprints
       #
       # paths_to_blueprints - as many Strings as paths where blueprints are located
