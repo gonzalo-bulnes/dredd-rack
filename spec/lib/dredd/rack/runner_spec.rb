@@ -18,6 +18,10 @@ describe Dredd::Rack::Runner do
     expect(subject).to respond_to :command_parts=
   end
 
+  it 'responds to :configure', public: true do
+    expect(subject).to respond_to :configure
+  end
+
   it 'respond_to :paths_to_blueprints', public: true do
     expect(subject).to respond_to :paths_to_blueprints
   end
@@ -55,6 +59,24 @@ describe Dredd::Rack::Runner do
       it 'returns false' do
         allow(subject).to receive_message_chain(:command, :has_at_least_two_arguments?).and_return(false)
         expect(subject.send(:command_valid?)).not_to be_truthy
+      end
+    end
+  end
+
+  describe '#configure', public: true do
+
+    context 'when the generated command has less than two arguments' do
+
+      it 'executes a configration block in the context of the runner' do
+        allow(subject).to receive_message_chain(:command, :has_at_least_two_arguments?).and_return(false)
+
+        expect(subject).to receive_message_chain(:dry_run!, :color!)
+        expect(subject).to receive(:level).with(:warning)
+
+        subject.configure do |s|
+          s.dry_run!.color!
+          s.level(:warning)
+        end
       end
     end
   end
