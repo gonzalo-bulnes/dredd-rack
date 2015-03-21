@@ -3,6 +3,21 @@ require 'rainbow'
 require 'rake'
 require 'rake/tasklib'
 
+# This class is heavily inspired in the RSpec::Core::RakeTask, which
+# was published under the MIT license by:
+#
+# Copyright (C) 2009 Chad Humphries, David Chelimsky
+# Copyright (C) 2006 David Chelimsky, The RSpec Development Team
+# Copyright (C) 2005 Steven Baker
+#
+# See https://github.com/rspec/rspec-core/blob/v3.2.2/lib/rspec/core/rake_task.rb
+#
+# Modifications are part of Dredd::Rack, published under the GNU GPLv3 ot later by:
+#
+# Copyright (C) 2015 Gonzalo Bulnes Guilpain
+#
+# See https://github.com/gonzalo-bulnes/dredd-rack/blob/v0.3.0/lib/dredd/rack/rake_task.rb
+
 module Dredd
   module Rack
 
