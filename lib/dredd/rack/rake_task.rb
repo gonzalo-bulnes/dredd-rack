@@ -43,21 +43,6 @@ module Dredd
         end
       end
 
-      def run_task(runner)
-        abort dredd_not_available_message unless dredd_available?
-
-        puts starting_message
-
-        puts command_message(runner)
-
-        success = runner.run
-        exit_status = $?.exitstatus
-
-        puts connection_error_message(runner) unless success if dredd_connection_error?(exit_status)
-
-        abort unless exit_status == 0
-      end
-
       private
 
         def dredd_available?
@@ -98,6 +83,21 @@ module Dredd
             or see https://github.com/apiaryio/dredd for instructions.
 
           eos
+        end
+
+        def run_task(runner)
+          abort dredd_not_available_message unless dredd_available?
+
+          puts starting_message
+
+          puts command_message(runner)
+
+          success = runner.run
+          exit_status = $?.exitstatus
+
+          puts connection_error_message(runner) unless success if dredd_connection_error?(exit_status)
+
+          abort unless exit_status == 0
         end
 
         def starting_message
