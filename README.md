@@ -28,7 +28,7 @@ Add the gem to your `Gemfile`:
 ```ruby
 # Gemfile
 
-gem 'dredd-rack', '~> 0.3.0' # see semver.org
+gem 'dredd-rack', '~> 0.4.0' # see semver.org
 ```
 
 Define which application Dredd::Rack must serve automatically:
