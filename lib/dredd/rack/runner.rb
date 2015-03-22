@@ -72,7 +72,7 @@ module Dredd
       #
       # Returns self.
       def paths_to_blueprints(*paths_to_blueprints)
-        raise ArgumentError, 'invalid path to blueprints' if paths_to_blueprints == ['']
+        raise ArgumentError, 'invalid path to blueprints' if paths_to_blueprints == [''] || paths_to_blueprints.empty?
 
         @paths_to_blueprints = paths_to_blueprints.join(' ')
         self
