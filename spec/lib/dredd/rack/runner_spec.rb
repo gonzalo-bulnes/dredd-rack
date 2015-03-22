@@ -18,6 +18,10 @@ describe Dredd::Rack::Runner do
     expect(subject).to respond_to :command_parts=
   end
 
+  it 'responds to :configure', public: true do
+    expect(subject).to respond_to :configure
+  end
+
   it 'respond_to :paths_to_blueprints', public: true do
     expect(subject).to respond_to :paths_to_blueprints
   end
@@ -48,6 +52,26 @@ describe Dredd::Rack::Runner do
     end
   end
 
+  describe '#api_endpoint', public: true do
+
+    let(:subject) { Dredd::Rack::Runner.new('https://example.com') }
+
+    it 'returns the runner api_endpoint' do
+      expect(subject.api_endpoint).to eq 'https://example.com'
+    end
+
+    context 'when given an argument' do
+
+      it 'returns the runner api_endpoint' do
+        expect(subject.api_endpoint('https://another.example.com')).to eq 'https://another.example.com'
+      end
+
+      it 'sets the runner api_endpoint' do
+        expect(subject.api_endpoint('https://another.example.com')).to eq 'https://another.example.com'
+      end
+    end
+  end
+
   describe '#command_valid?', private: true do
 
     context 'when the generated command has less than two arguments' do
@@ -55,6 +79,24 @@ describe Dredd::Rack::Runner do
       it 'returns false' do
         allow(subject).to receive_message_chain(:command, :has_at_least_two_arguments?).and_return(false)
         expect(subject.send(:command_valid?)).not_to be_truthy
+      end
+    end
+  end
+
+  describe '#configure', public: true do
+
+    context 'when the generated command has less than two arguments' do
+
+      it 'executes a configration block in the context of the runner' do
+        allow(subject).to receive_message_chain(:command, :has_at_least_two_arguments?).and_return(false)
+
+        expect(subject).to receive_message_chain(:dry_run!, :color!)
+        expect(subject).to receive(:level).with(:warning)
+
+        subject.configure do |s|
+          s.dry_run!.color!
+          s.level(:warning)
+        end
       end
     end
   end
@@ -96,11 +138,19 @@ describe Dredd::Rack::Runner do
       expect(subject.paths_to_blueprints('some/path/*.apib')).to eq subject
     end
 
+
     context 'with one or more paths to blueprints as arguments' do
 
       it 'defines custom paths to blueprints' do
         expect(subject.paths_to_blueprints('blueprints/*.md', 'blueprints/*.apib').command).to match /blueprints\/\*\.md blueprints\/\*\.apib/
         expect(subject.paths_to_blueprints('blueprints/*.md').command).not_to match /doc/
+      end
+    end
+
+    context 'with no arguments' do
+
+      it 'raises ArgumentError' do
+        expect{ subject.paths_to_blueprints() }.to raise_error ArgumentError, 'invalid path to blueprints'
       end
     end
 

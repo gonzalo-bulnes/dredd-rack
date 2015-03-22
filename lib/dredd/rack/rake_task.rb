@@ -3,6 +3,21 @@ require 'rainbow'
 require 'rake'
 require 'rake/tasklib'
 
+# This class is heavily inspired in the RSpec::Core::RakeTask, which
+# was published under the MIT license by:
+#
+# Copyright (C) 2009 Chad Humphries, David Chelimsky
+# Copyright (C) 2006 David Chelimsky, The RSpec Development Team
+# Copyright (C) 2005 Steven Baker
+#
+# See https://github.com/rspec/rspec-core/blob/v3.2.2/lib/rspec/core/rake_task.rb
+#
+# Modifications are part of Dredd::Rack, published under the GNU GPLv3 ot later by:
+#
+# Copyright (C) 2015 Gonzalo Bulnes Guilpain
+#
+# See https://github.com/gonzalo-bulnes/dredd-rack/blob/v0.3.0/lib/dredd/rack/rake_task.rb
+
 module Dredd
   module Rack
 
@@ -32,30 +47,16 @@ module Dredd
       attr_reader :runner
 
       # Define a task with a custom name, arguments and description
-      def initialize(*args)
+      def initialize(*args, &task_block)
         @name = args.shift || :dredd
         @description = 'Run Dredd::Rack API blueprint verification'
         @runner = Dredd::Rack::Runner.new(ENV['API_HOST'])
 
         desc description unless ::Rake.application.last_comment
-        task name, args do
+        task name, *args do |task_args|
+          task_block.call(*[self, task_args].slice(0, task_block.arity)) if task_block
           run_task(runner)
         end
-      end
-
-      def run_task(runner)
-        abort dredd_not_available_message unless dredd_available?
-
-        puts starting_message
-
-        puts command_message(runner)
-
-        success = runner.run
-        exit_status = $?.exitstatus
-
-        puts connection_error_message(runner) unless success if dredd_connection_error?(exit_status)
-
-        abort unless exit_status == 0
       end
 
       private
@@ -98,6 +99,21 @@ module Dredd
             or see https://github.com/apiaryio/dredd for instructions.
 
           eos
+        end
+
+        def run_task(runner)
+          abort dredd_not_available_message unless dredd_available?
+
+          puts starting_message
+
+          puts command_message(runner)
+
+          success = runner.run
+          exit_status = $?.exitstatus
+
+          puts connection_error_message(runner) unless success if dredd_connection_error?(exit_status)
+
+          abort unless exit_status == 0
         end
 
         def starting_message

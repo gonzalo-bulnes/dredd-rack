@@ -38,9 +38,6 @@ module Dredd
       # Store the Dredd command line options
       attr_accessor :command_parts
 
-      # Return the API endpoint
-      attr_reader :api_endpoint
-
       # Initialize a runner instance
       #
       # The API endpoint can be local or remote.
@@ -56,9 +53,27 @@ module Dredd
         yield self if block_given?
       end
 
+      # Set or return the runner API endpoint
+      #
+      # Use with no arguments to read the runner API endpoint,
+      # provide an API endpoint to set it.
+      #
+      # api_endpoint - String URL of the API endpoint to validate
+      #
+      # Returns the String URL of the runner API endpoint.
+      def api_endpoint(api_endpoint=nil)
+        @api_endpoint = api_endpoint unless api_endpoint.nil?
+        @api_endpoint
+      end
+
       # Return the Dredd command line
       def command
         ([@dredd_command, @paths_to_blueprints, @api_endpoint] + @command_parts).join(' ')
+      end
+
+      # Configure the runner instance
+      def configure
+        yield self if block_given?
       end
 
       # Define custom paths to blueprints
@@ -67,7 +82,7 @@ module Dredd
       #
       # Returns self.
       def paths_to_blueprints(*paths_to_blueprints)
-        raise ArgumentError, 'invalid path to blueprints' if paths_to_blueprints == ['']
+        raise ArgumentError, 'invalid path to blueprints' if paths_to_blueprints == [''] || paths_to_blueprints.empty?
 
         @paths_to_blueprints = paths_to_blueprints.join(' ')
         self
