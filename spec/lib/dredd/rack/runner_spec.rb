@@ -52,6 +52,26 @@ describe Dredd::Rack::Runner do
     end
   end
 
+  describe '#api_endpoint', public: true do
+
+    let(:subject) { Dredd::Rack::Runner.new('https://example.com') }
+
+    it 'returns the runner api_endpoint' do
+      expect(subject.api_endpoint).to eq 'https://example.com'
+    end
+
+    context 'when given an argument' do
+
+      it 'returns the runner api_endpoint' do
+        expect(subject.api_endpoint('https://another.example.com')).to eq 'https://another.example.com'
+      end
+
+      it 'sets the runner api_endpoint' do
+        expect(subject.api_endpoint('https://another.example.com')).to eq 'https://another.example.com'
+      end
+    end
+  end
+
   describe '#command_valid?', private: true do
 
     context 'when the generated command has less than two arguments' do
