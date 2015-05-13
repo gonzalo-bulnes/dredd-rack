@@ -53,10 +53,12 @@ module Dredd
         @runner = Dredd::Rack::Runner.new(ENV['API_HOST'])
 
         desc description unless ::Rake.application.last_comment
-        task name, *args do |task_args|
+        rake_task = task name, *args do |task_args|
           task_block.call(*[self, task_args].slice(0, task_block.arity)) if task_block
           run_task(runner)
         end
+
+        integrate_with_rails!(rake_task)
       end
 
       private
@@ -121,6 +123,10 @@ module Dredd
 
             #{Rainbow('Verify the API conformance against its blueprint.').blue}
           eos
+        end
+
+        def integrate_with_rails!(rake_task)
+          rake_task.enhance([:environment]) if Rake::Task.task_defined? :environment
         end
     end
   end

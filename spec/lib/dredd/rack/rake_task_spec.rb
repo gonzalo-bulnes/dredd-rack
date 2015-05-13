@@ -18,6 +18,14 @@ describe Dredd::Rack::RakeTask do
     expect(subject).to respond_to :name
   end
 
+  context 'when initialized' do
+
+    it 'ensures integration with Rails', protected: true do
+      allow_any_instance_of(Dredd::Rack::RakeTask).to receive(:integrate_with_rails!).and_raise 'Integration with Rails was ensured.'
+      expect{ Dredd::Rack::RakeTask.new }.to raise_error 'Integration with Rails was ensured.'
+    end
+  end
+
   describe '#runner', public: true do
 
     it 'is a default Dredd::Rack runner' do
@@ -55,6 +63,20 @@ describe Dredd::Rack::RakeTask do
       it 'returns the custom name' do
         subject = Dredd::Rack::RakeTask.new(:anderson)
         expect(subject.name).to eq :anderson
+      end
+    end
+  end
+
+  describe '#integrate_with_rails!', private: true do
+
+    context 'when the :environment Rake task is available' do
+
+      it 'defines it as a prerequisite to load the Rails environment', focus: true do
+        allow(Rake::Task).to receive(:task_defined?).with(:environment).and_return(true)
+
+        rake_task = double
+        expect(rake_task).to receive(:enhance).with([:environment])
+        subject.send(:integrate_with_rails!, rake_task)
       end
     end
   end
