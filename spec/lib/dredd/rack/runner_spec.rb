@@ -214,15 +214,19 @@ describe Dredd::Rack::Runner do
     end
   end
 
-  Dredd::Rack::Runner::BOOLEAN_OPTIONS.each do |option|
+  Dredd::Rack::Runner::META_OPTIONS.each do |option|
     describe "##{option}", public: true do
       it_behaves_like 'a boolean option', option, ['some argument']
     end
   end
 
   Dredd::Rack::Runner::NEGATABLE_BOOLEAN_OPTIONS.each do |option|
+    describe "##{option}", public: true do
+      it_behaves_like 'a negatable boolean option', option.to_sym, ['some argument']
+    end
+
     describe "#no_#{option}", public: true do
-      it_behaves_like 'a boolean option', "no_#{option}".to_sym, ['some argument']
+      it_behaves_like 'a negatable boolean option', "no_#{option}".to_sym, ['some argument']
     end
   end
 

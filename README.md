@@ -4,7 +4,7 @@ Dredd::Rack
 [![Gem Version](https://badge.fury.io/rb/dredd-rack.svg)](http://badge.fury.io/rb/dredd-rack)
 [![Build Status](https://travis-ci.org/gonzalo-bulnes/dredd-rack.svg?branch=master)](https://travis-ci.org/gonzalo-bulnes/dredd-rack)
 [![Code Climate](https://codeclimate.com/github/gonzalo-bulnes/dredd-rack.svg)](https://codeclimate.com/github/gonzalo-bulnes/dredd-rack)
-[![Dredd Reference Version](https://img.shields.io/badge/dredd_reference_version-0.4.8-brightgreen.svg)](https://github.com/apiaryio/dredd)
+[![Dredd Reference Version](https://img.shields.io/badge/dredd_reference_version-1.0.0-brightgreen.svg)](https://github.com/apiaryio/dredd)
 [![Inline docs](http://inch-ci.org/github/gonzalo-bulnes/dredd-rack.svg?branch=master)](http://inch-ci.org/github/gonzalo-bulnes/dredd-rack)
 
 > **DISCLAIMER**: This is an early version of Dredd::Rack, please be aware that it will not be stable until `v1.0.0`. At any moment, [feedback][issues] is more than welcome! : ) -- [GB][gonzalo-bulnes]
