@@ -60,6 +60,11 @@ dredd = Dredd::Rack::Runner.new do |options|
 
   options.hookfiles 'doc/hooks/*_hooks.coffee'
 
+  options.language 'ruby'
+  options.server 'rails server'
+  options.server_wait '3'
+  options.custom 'a:b'
+
   options.only 'Machines > Machines Collection > List all Machines',
                'Machines > Machine > Retrieve a Machine'
 
@@ -78,7 +83,9 @@ dredd = Dredd::Rack::Runner.new do |options|
   options.method('POST').method('PUT')
 
   options.dry_run!            # no_dry_run!
+  options.sandbox!            # no_sandbox!
   options.names!              # no_names!
+  options.init!               # no_init!
   options.sorted!             # no_sorted!
   options.inline_errors!      # no_inline_errors!
   options.details!            # no_details!

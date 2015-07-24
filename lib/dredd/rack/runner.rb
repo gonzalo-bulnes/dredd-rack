@@ -26,13 +26,13 @@ module Dredd
 
       undef_method :method
 
-      NEGATABLE_BOOLEAN_OPTIONS = [:dry_run!, :names!, :sorted!, :inline_errors!,
+      NEGATABLE_BOOLEAN_OPTIONS = [:dry_run!, :sandbox!, :names!, :init!, :sorted!, :inline_errors!,
                                    :details!, :color!, :timestamp!, :silent!]
       META_OPTIONS              = [:help, :version]
       BOOLEAN_OPTIONS           = NEGATABLE_BOOLEAN_OPTIONS + META_OPTIONS
 
-      SINGLE_ARGUMENT_OPTIONS   = [:hookfiles, :only, :reporter, :output, :header,
-                                   :user, :method, :level, :path]
+      SINGLE_ARGUMENT_OPTIONS   = [:hookfiles, :language, :server, :server_wait, :custom, :only,
+                                   :reporter, :output, :header, :user, :method, :level, :path]
       OPTIONS                   = BOOLEAN_OPTIONS + SINGLE_ARGUMENT_OPTIONS
 
       # Store the Dredd command line options
