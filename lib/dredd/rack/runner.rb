@@ -96,7 +96,7 @@ module Dredd
           start_server! unless api_remote?
           Kernel.system(command)
         else
-          raise ArgumentError, "Invalid command - #{command}"
+          raise InvalidCommandError.new(command)
         end
       end
 
