@@ -173,7 +173,7 @@ describe Dredd::Rack::Runner do
       it 'fails with invalid command exception' do
         command = 'test_command'
         allow(subject).to receive(:command).and_return(command)
-        expect { subject.run }.to raise_error(ArgumentError, "Invalid command - #{command}")
+        expect { subject.run }.to raise_error(Dredd::Rack::InvalidCommandError, "Invalid command - #{command}")
       end
     end
     context 'when the command is valid' do
