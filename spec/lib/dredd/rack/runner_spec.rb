@@ -164,6 +164,19 @@ describe Dredd::Rack::Runner do
 
   describe '#run', public: true do
 
+    context 'when the command is not valid' do
+
+      before(:each) do
+        allow(subject).to receive(:command_valid?).and_return(false)
+      end
+
+      it 'raises Dredd::Rack::InvalidCommandError' do
+        command = 'test_command'
+        allow(subject).to receive(:command).and_return(command)
+        expect { subject.run }.to raise_error(Dredd::Rack::InvalidCommandError)
+      end
+    end
+
     context 'when the command is valid' do
 
       before(:each) do

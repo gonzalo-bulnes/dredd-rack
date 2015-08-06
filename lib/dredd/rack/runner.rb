@@ -92,11 +92,9 @@ module Dredd
       #
       # Returns true if the Dredd exit status is zero, false instead.
       def run
-
-        if command_valid?
-          start_server! unless api_remote?
-          Kernel.system(command)
-        end
+        raise InvalidCommandError.new(command) unless command_valid?
+        start_server! unless api_remote?
+        Kernel.system(command)
       end
 
       # Ensure that the runner does respond_to? its option methods
