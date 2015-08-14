@@ -113,7 +113,11 @@ module Dredd
         end
 
         def command_valid?
-          command.argument_count >= 2
+          if api_remote?
+            command.argument_count >= 2
+          else
+            command.argument_count >= 1
+          end
         end
 
         def start_server!
