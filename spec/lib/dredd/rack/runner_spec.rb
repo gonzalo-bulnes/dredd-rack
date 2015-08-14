@@ -77,7 +77,7 @@ describe Dredd::Rack::Runner do
     context 'when the generated command has less than two arguments' do
 
       it 'returns false' do
-        allow(subject).to receive_message_chain(:command, :has_at_least_two_arguments?).and_return(false)
+        allow(subject).to receive_message_chain(:command, :argument_count).and_return(0)
         expect(subject.send(:command_valid?)).not_to be_truthy
       end
     end
@@ -88,7 +88,7 @@ describe Dredd::Rack::Runner do
     context 'when the generated command has less than two arguments' do
 
       it 'executes a configration block in the context of the runner' do
-        allow(subject).to receive_message_chain(:command, :has_at_least_two_arguments?).and_return(false)
+        allow(subject).to receive_message_chain(:command, :argument_count).and_return(1)
 
         expect(subject).to receive_message_chain(:dry_run!, :color!)
         expect(subject).to receive(:level).with(:warning)
@@ -252,22 +252,22 @@ end
 
 describe String, public: true do
 
-  it 'responds to :has_at_least_two_arguments?' do
-    expect(subject).to respond_to :has_at_least_two_arguments?
+  it 'responds to :argument_count' do
+    expect(subject).to respond_to :argument_count
   end
 
 
-  describe '#has_at_least_two_arguments?' do
+  describe '#argument_count' do
 
     context 'when the String can be interpreted as a command with at least two arguments' do
-      context 'returns true (reliable)' do
+      context 'returns at least two' do
 
         ['dredd doc/*.apib http://api.example.com',
          'dredd doc/*.apib doc/*apib.md http://api.example.com',
          'dredd doc/*.apib http://api.example.com --level verbose'].each do |subject|
 
           it "e.g. '#{subject}'" do
-            expect(subject.has_at_least_two_arguments?).to be_truthy
+            expect(subject.argument_count).to be >= 2
           end
         end
       end
@@ -281,7 +281,7 @@ describe String, public: true do
          'dredd --dry-run --level verbose'].each do |subject|
 
           it "e.g. '#{subject}'" do
-            expect(subject.has_at_least_two_arguments?).to be_falsey
+            expect(subject.argument_count).to be < 2
           end
         end
       end
