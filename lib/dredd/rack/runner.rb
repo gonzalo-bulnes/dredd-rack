@@ -117,7 +117,11 @@ module Dredd
         end
 
         def command_valid?
-          command.has_at_least_one_argument?
+          if api_remote?
+            command.has_at_least_two_arguments?
+          else
+            command.has_at_least_one_argument?
+          end
         end
 
         def start_server!
