@@ -172,7 +172,12 @@ class String
   #
   # Returns true if the command String has at least two arguments, false otherwise.
   def has_at_least_two_arguments?
-    split('--').first.split(' ').length >= 3
+    argument_count >= 2
+  end
+
+  def argument_count
+    tokens = split('--').first.split(' ')
+    arguments = tokens.length - 1
   end
 end
 
