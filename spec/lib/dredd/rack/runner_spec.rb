@@ -123,7 +123,7 @@ describe Dredd::Rack::Runner do
 
         expect(subject.command).to match /http:\/\/localhost:4567/
         expect(subject.command).to match /blueprints\/\*\.apib doc\/\*\.apib/
-        expect(subject.command).to match /--level silly/
+        expect(subject.command).to match /--level "silly"/
         expect(subject.command).to match /--no-color/
 
         expect(subject.command).not_to match /http:\/\/localhost:3000/
@@ -256,6 +256,9 @@ describe String, public: true do
     expect(subject).to respond_to :has_at_least_two_arguments?
   end
 
+  it 'responds to :quote!' do
+    expect(subject).to respond_to :quote!
+  end
 
   describe '#has_at_least_two_arguments?' do
 
@@ -285,6 +288,16 @@ describe String, public: true do
           end
         end
       end
+    end
+  end
+
+  describe '#quote!' do
+
+    let(:string) { "some string" }
+
+    it 'returns the string content surrounded by quotes' do
+      expect(string.quote!).to match /some string/
+      expect(string.quote!).to match /^".*"$/
     end
   end
 end
