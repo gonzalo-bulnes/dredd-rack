@@ -11,7 +11,7 @@ Gem::Specification.new do |gem|
   gem.email         = ["gon.bulnes@gmail.com"]
   gem.summary       = %q{Convenient API blueprint testing with Apiary Dredd for Rack applications.}
   gem.homepage      = "https://github.com/gonzalo-bulnes/dredd-rack"
-  gem.license         = "GPLv3"
+  gem.license         = "GPL-3.0+"
 
   gem.files = Dir["{doc,lib}/**/*", "Gemfile", "LICENSE", "Rakefile", "README.md"]
   gem.test_files = Dir["spec/**/*"]

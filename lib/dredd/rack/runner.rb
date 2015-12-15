@@ -137,7 +137,7 @@ module Dredd
 
           option_flag = name.to_s.gsub('_', '-').gsub('!', '').prepend('--')
           command_parts = self.command_parts.push option_flag
-          command_parts = self.command_parts.push args.slice(0).to_s if SINGLE_ARGUMENT_OPTIONS.include? name
+          command_parts = self.command_parts.push args.slice(0).to_s.quote! if SINGLE_ARGUMENT_OPTIONS.include? name
           self
         end
 
@@ -173,6 +173,19 @@ class String
   # Returns true if the command String has at least two arguments, false otherwise.
   def has_at_least_two_arguments?
     split('--').first.split(' ').length >= 3
+  end
+
+  # Include quotes as part of the string
+  #
+  # Examples:
+  #
+  #    "Hello, world!".quote! # => "\"Hello, world!\""
+  #    "Hello, world!".size # => 13
+  #    "Hello, world!".quote!.size # => 15
+  #
+  # Returns a String, whose first and last characters are quotes.
+  def quote!
+    '"' + self + '"'
   end
 end
 

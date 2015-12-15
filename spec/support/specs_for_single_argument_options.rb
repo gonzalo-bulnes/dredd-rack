@@ -7,6 +7,14 @@ RSpec.shared_examples 'a single-argument option' do |option, args|
 
     expect{ subject.send(option, args.slice(0), args.slice(1)) }.to change{
       subject.command
-    }.to(end_with "#{option_flag} #{args.slice(0)}")
+    }.to(end_with "#{option_flag} \"#{args.slice(0)}\"")
+  end
+
+  it 'surrounds its flag argument with quotes' do
+    option_flag = option.to_s.gsub('_', '-').prepend('--')
+
+    expect{ subject.send(option, args.slice(0), args.slice(1)) }.to change{
+      subject.command
+    }.to(end_with "\"#{args.slice(0)}\"")
   end
 end
