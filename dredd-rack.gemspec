@@ -13,7 +13,7 @@ Gem::Specification.new do |gem|
   gem.homepage      = "https://github.com/gonzalo-bulnes/dredd-rack"
   gem.license         = "GPL-3.0+"
 
-  gem.files = Dir["{doc,lib}/**/*", "Gemfile", "LICENSE", "Rakefile", "README.md"]
+  gem.files = Dir["{doc,lib}/**/*", "CHANGELOG.md", "Gemfile", "LICENSE", "Rakefile", "README.md"]
   gem.test_files = Dir["spec/**/*"]
 
   gem.add_dependency "capybara", "~> 2.4"

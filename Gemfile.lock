@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    dredd-rack (0.7.1)
+    dredd-rack (0.8.0)
       capybara (~> 2.4)
       rainbow (~> 2.0)
       rake (~> 10.4)
@@ -69,4 +69,4 @@ DEPENDENCIES
   rspec (~> 3.0)
 
 BUNDLED WITH
-   1.10.6
+   1.11.2
