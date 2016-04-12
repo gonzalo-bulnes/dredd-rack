@@ -4,7 +4,7 @@ PATH
     dredd-rack (0.8.0)
       capybara (~> 2.4)
       rainbow (~> 2.0)
-      rake (~> 10.4)
+      rake (>= 10.4, < 12)
 
 GEM
   remote: https://rubygems.org/
@@ -39,7 +39,7 @@ GEM
     rack-test (0.6.3)
       rack (>= 1.0)
     rainbow (2.1.0)
-    rake (10.5.0)
+    rake (11.1.2)
     rspec (3.4.0)
       rspec-core (~> 3.4.0)
       rspec-expectations (~> 3.4.0)
