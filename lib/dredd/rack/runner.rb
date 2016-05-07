@@ -32,7 +32,11 @@ module Dredd
       BOOLEAN_OPTIONS           = NEGATABLE_BOOLEAN_OPTIONS + META_OPTIONS
 
       SINGLE_ARGUMENT_OPTIONS   = [:hookfiles, :language, :server, :server_wait, :custom, :only,
-                                   :reporter, :output, :header, :user, :method, :level, :path]
+                                   :reporter, :output, :header, :user, :method, :level, :path,
+                                   :hooks_worker_timeout, :hooks_worker_connect_timeout,
+                                   :hooks_worker_connect_retry, :hooks_worker_after_connect_wait,
+                                   :hooks_worker_term_timeout, :hooks_worker_term_retry,
+                                   :hooks_worker_handler_host, :hooks_worker_handler_port]
       OPTIONS                   = BOOLEAN_OPTIONS + SINGLE_ARGUMENT_OPTIONS
 
       # Store the Dredd command line options
