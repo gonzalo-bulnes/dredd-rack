@@ -117,7 +117,11 @@ module Dredd
         end
 
         def command_valid?
-          command.has_at_least_two_arguments?
+          if api_remote?
+            command.argument_count >= 2
+          else
+            command.argument_count >= 1
+          end
         end
 
         def start_server!
@@ -151,16 +155,16 @@ end
 
 class String
 
-  # Verify that a command has at least two arguments (excluding options)
+  # Return the number of arguments in a command (excluding options)
   #
   # Examples:
   #
-  #    "dredd doc/*.apib http://api.example.com".valid? # => true
-  #    "dredd doc/*.apib doc/*apib.md http://api.example.com".valid? # => true
-  #    "dredd doc/*.apib http://api.example.com --level verbose".valid? # => true
-  #    "dredd http://api.example.com".valid? # => false
-  #    "dredd doc/*.apib --dry-run".valid? # => false
-  #    "dredd --dry-run --level verbose".valid? # => false
+  #    "dredd doc/*.apib http://api.example.com".argument_count # => 2
+  #    "dredd doc/*.apib doc/*apib.md http://api.example.com".argument_count # => 3
+  #    "dredd doc/*.apib http://api.example.com --level verbose".argument_count # => 2
+  #    "dredd http://api.example.com".argument_count # => 1
+  #    "dredd doc/*.apib --dry-run".argument_count # => 1
+  #    "dredd --dry-run --level verbose".argument_count # => 0
   #
   # Known limitations:
   #
@@ -169,14 +173,11 @@ class String
   #
   # Note:
   #
-  # The known limitations imply that there may be false negatives: this method
-  # can return false for commands that do have two arguments or more. But there
-  # should not be false positives: if the method returns true, then the command
-  # does have at least two arguments.
-  #
-  # Returns true if the command String has at least two arguments, false otherwise.
-  def has_at_least_two_arguments?
-    split('--').first.split(' ').length >= 3
+  # The known limitations imply that the count may be lower than (long options
+  # are not # counted) but never higher than the true number of arguments.
+  def argument_count
+    tokens = split('--').first.split(' ')
+    arguments = tokens.length - 1
   end
 
   # Include quotes as part of the string
