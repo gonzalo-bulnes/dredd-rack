@@ -74,11 +74,31 @@ describe Dredd::Rack::Runner do
 
   describe '#command_valid?', private: true do
 
-    context 'when the generated command has less than two arguments' do
+
+    context 'when the command has less than one argument' do
 
       it 'returns false' do
+        allow(subject).to receive_message_chain(:command, :has_at_least_one_argument?).and_return(false)
         allow(subject).to receive_message_chain(:command, :has_at_least_two_arguments?).and_return(false)
+
         expect(subject.send(:command_valid?)).not_to be_truthy
+      end
+    end
+
+    context 'when the API to test is remote' do
+
+      before(:each) do
+        allow(subject).to receive(:api_remote?).and_return(true)
+      end
+
+      context 'when the command has less than two arguments' do
+
+        it 'returns false' do
+          allow(subject).to receive_message_chain(:command, :has_at_least_one_argument?).and_return(true)
+          allow(subject).to receive_message_chain(:command, :has_at_least_two_arguments?).and_return(false)
+
+          expect(subject.send(:command_valid?)).not_to be_truthy
+        end
       end
     end
   end

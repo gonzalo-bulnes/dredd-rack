@@ -117,7 +117,7 @@ module Dredd
         end
 
         def command_valid?
-          command.has_at_least_two_arguments?
+          command.has_at_least_one_argument?
         end
 
         def start_server!
