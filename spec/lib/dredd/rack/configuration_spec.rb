@@ -16,12 +16,21 @@ describe Dredd::Rack::Configuration do
 
     let(:subject) { @klass }
 
-    describe 'provides #app which' do
+    describe 'provides .app which' do
 
       it_behaves_like 'a configuration option', 'app'
 
       it "defauts to nil", private: true do
         expect(subject.app).to be_nil
+      end
+    end
+
+    describe 'provides .dredd_command which' do
+
+      it_behaves_like 'a configuration option', 'dredd_command'
+
+      it "defauts to 'dredd'", private: true do
+        expect(subject.dredd_command).to eq 'dredd'
       end
     end
   end

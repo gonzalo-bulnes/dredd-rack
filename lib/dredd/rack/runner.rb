@@ -49,7 +49,7 @@ module Dredd
       # api_endpoint - the API URL as a String
       #
       def initialize(api_endpoint=nil)
-        @dredd_command = 'dredd'
+        @dredd_command = Dredd::Rack.dredd_command
         @paths_to_blueprints = 'doc/*.apib doc/*.apib.md'
         @api_endpoint = api_endpoint || ''
         @command_parts = []

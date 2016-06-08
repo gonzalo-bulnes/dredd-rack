@@ -42,6 +42,9 @@ require 'dredd/rack'
 #
 # Find the name of your application in its `config.ru` file.
 Dredd::Rack.app = Example::Application # or Rails.application, Sinatra::Application...
+
+# Optionally, you can define a custom Dredd command:
+Dredd::Rack.dredd_command = 'dredd'
 ```
 
 Usage

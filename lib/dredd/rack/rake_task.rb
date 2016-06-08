@@ -64,8 +64,7 @@ module Dredd
       private
 
         def dredd_available?
-          `which dredd`
-          $?.exitstatus == 0
+          system ['which', Dredd::Rack.dredd_command].join(' ')
         end
 
         def dredd_connection_error?(exit_status)
