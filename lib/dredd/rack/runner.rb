@@ -117,7 +117,11 @@ module Dredd
         end
 
         def command_valid?
-          command.has_at_least_two_arguments?
+          if api_remote?
+            command.has_at_least_two_arguments?
+          else
+            command.has_at_least_one_argument?
+          end
         end
 
         def start_server!
@@ -150,6 +154,34 @@ module Dredd
 end
 
 class String
+
+  # Verify that a command has at least one argument (excluding options)
+  #
+  # Examples:
+  #
+  #    "dredd doc/*.apib".valid? # => true
+  #    "dredd doc/*.apib doc/*apib.md".valid? # => true
+  #    "dredd doc/*.apib --level verbose".valid? # => true
+  #    "dredd".valid? # => false
+  #    "dredd --dry-run".valid? # => false
+  #    "dredd --dry-run --level verbose".valid? # => false
+  #
+  # Known limitations:
+  #
+  # Does not support short flags. (e.g. using `-l` instead of `--level`).
+  # Requires options to be specified after the last argument.
+  #
+  # Note:
+  #
+  # The known limitations imply that there may be false negatives: this method
+  # can return false for commands that do have two arguments or more. But there
+  # should not be false positives: if the method returns true, then the command
+  # does have at least two arguments.
+  #
+  # Returns true if the command String has at least one arguments, false otherwise.
+  def has_at_least_one_argument?
+    split('--').first.split(' ').length >= 2
+  end
 
   # Verify that a command has at least two arguments (excluding options)
   #

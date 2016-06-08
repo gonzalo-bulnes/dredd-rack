@@ -74,11 +74,31 @@ describe Dredd::Rack::Runner do
 
   describe '#command_valid?', private: true do
 
-    context 'when the generated command has less than two arguments' do
+
+    context 'when the command has less than one argument' do
 
       it 'returns false' do
+        allow(subject).to receive_message_chain(:command, :has_at_least_one_argument?).and_return(false)
         allow(subject).to receive_message_chain(:command, :has_at_least_two_arguments?).and_return(false)
+
         expect(subject.send(:command_valid?)).not_to be_truthy
+      end
+    end
+
+    context 'when the API to test is remote' do
+
+      before(:each) do
+        allow(subject).to receive(:api_remote?).and_return(true)
+      end
+
+      context 'when the command has less than two arguments' do
+
+        it 'returns false' do
+          allow(subject).to receive_message_chain(:command, :has_at_least_one_argument?).and_return(true)
+          allow(subject).to receive_message_chain(:command, :has_at_least_two_arguments?).and_return(false)
+
+          expect(subject.send(:command_valid?)).not_to be_truthy
+        end
       end
     end
   end
@@ -252,12 +272,47 @@ end
 
 describe String, public: true do
 
+  it 'responds to :has_at_least_one_argument?' do
+    expect(subject).to respond_to :has_at_least_one_argument?
+  end
+
   it 'responds to :has_at_least_two_arguments?' do
     expect(subject).to respond_to :has_at_least_two_arguments?
   end
 
   it 'responds to :quote!' do
     expect(subject).to respond_to :quote!
+  end
+
+  describe '#has_at_least_one_argument?' do
+
+    context 'when the String can be interpreted as a command with at least one argument' do
+      context 'returns true (reliable)' do
+
+        ['dredd doc/*.apib',
+         'dredd doc/*.apib doc/*apib.md',
+         'dredd doc/*.apib --level verbose'].each do |subject|
+
+          it "e.g. '#{subject}'" do
+            expect(subject.has_at_least_one_argument?).to be_truthy
+          end
+        end
+      end
+    end
+
+    context 'when the String can be interpreted as a command with no arguments' do
+      context 'returns false (unreliable)' do
+
+        ['dredd',
+         'dredd --dry-run',
+         'dredd --dry-run --level verbose'].each do |subject|
+
+          it "e.g. '#{subject}'" do
+            expect(subject.has_at_least_one_argument?).to be_falsey
+          end
+        end
+      end
+    end
   end
 
   describe '#has_at_least_two_arguments?' do
