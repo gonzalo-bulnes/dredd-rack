@@ -82,6 +82,15 @@ dredd = Dredd::Rack::Runner.new do |options|
 
   options.method('POST').method('PUT')
 
+  options.hooks_worker_timeout 5000
+  options.hooks_worker_connect_timeout 1500
+  options.hooks_worker_connect_retry 500
+  options.hooks_worker_after_connect_wait 100
+  options.hooks_worker_term_timeout 5000
+  options.hooks_worker_term_retry 500
+  options.hooks_worker_handler_host 'localhost'
+  options.hooks_worker_handler_port 61321
+
   options.dry_run!            # no_dry_run!
   options.sandbox!            # no_sandbox!
   options.names!              # no_names!
