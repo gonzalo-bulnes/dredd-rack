@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.8.2] - 2016-06-08
+
+### Fixed
+
+- Fix inaccurate counting of command arguments for local API
+- Minor fix missing documentation for Dredd v1.0.8 options
+
 ## [0.8.1] - 2016-05-07
 
 ### Added
@@ -65,6 +72,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 The original implementation of the Rake task was shared in this [gist][gist].
 
 [gist]: https://gist.github.com/gonzalo-bulnes/eec3f73cc7d6605add21
+[0.8.2]: https://github.com/gonzalo-bulnes/dredd-rack/compare/v0.8.1...v0.8.2
 [0.8.1]: https://github.com/gonzalo-bulnes/dredd-rack/compare/v0.7.1...v0.8.1
 [0.8.0]: https://github.com/gonzalo-bulnes/dredd-rack/compare/v0.7.1...v0.8.0
 [0.7.1]: https://github.com/gonzalo-bulnes/dredd-rack/compare/v0.7.0...v0.7.1
