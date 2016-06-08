@@ -35,6 +35,10 @@ module Dredd
       @@app = nil
       @@dredd_command = 'dredd'
 
+      # Allow the default configuration to be overwritten from initializers
+      def configure
+        yield self if block_given?
+      end
     end
   end
 end

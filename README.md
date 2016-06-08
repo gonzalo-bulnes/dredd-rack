@@ -38,13 +38,16 @@ Define which application Dredd::Rack must serve automatically:
 
 require 'dredd/rack'
 
-# Allow the automatic setup of a local application server when necessary
-#
-# Find the name of your application in its `config.ru` file.
-Dredd::Rack.app = Example::Application # or Rails.application, Sinatra::Application...
+Dredd::Rack.configure do |config|
+  # Allow the automatic setup of a local application server when necessary
+  #
+  # Find the name of your application in its `config.ru` file.
+  config.app = Example::Application # or Rails.application, Sinatra::Application...
 
-# Optionally, you can define a custom Dredd command:
-Dredd::Rack.dredd_command = 'dredd'
+  # Optionally, you can define a custom Dredd command:
+  config.dredd_command = 'dredd'
+end
+
 ```
 
 Usage
