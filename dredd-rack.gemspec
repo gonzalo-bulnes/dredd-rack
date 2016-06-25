@@ -17,9 +17,9 @@ Gem::Specification.new do |gem|
   gem.test_files = Dir["spec/**/*"]
 
   gem.add_dependency "capybara", "~> 2.4"
-  gem.add_dependency "rake", "~> 10.4"
+  gem.add_dependency "rake", ">= 10.4", "< 11"
   gem.add_dependency "rainbow", "~> 2.0"
 
-  gem.add_development_dependency "inch", "~> 0.5.10"
+  gem.add_development_dependency "inch", "~> 0.7.1"
   gem.add_development_dependency "rspec", "~> 3.0"
 end
