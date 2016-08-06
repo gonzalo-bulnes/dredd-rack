@@ -5,7 +5,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
 - Add support for Rake 11 - @tobiashm
+- Add support for Dredd v1.5.0
 
 ## [0.9.0] - 2016-06-15
 

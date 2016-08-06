@@ -36,7 +36,8 @@ module Dredd
                                    :hooks_worker_timeout, :hooks_worker_connect_timeout,
                                    :hooks_worker_connect_retry, :hooks_worker_after_connect_wait,
                                    :hooks_worker_term_timeout, :hooks_worker_term_retry,
-                                   :hooks_worker_handler_host, :hooks_worker_handler_port]
+                                   :hooks_worker_handler_host, :hooks_worker_handler_port,
+                                   :config]
       OPTIONS                   = BOOLEAN_OPTIONS + SINGLE_ARGUMENT_OPTIONS
 
       # Store the Dredd command line options
