@@ -59,6 +59,7 @@ dredd = Dredd::Rack::Runner.new do |options|
   options.api_endpoint 'https://api.example.com' # allows to validate remote API
 
   options.hookfiles 'doc/hooks/*_hooks.coffee'
+  options.config './dredd.yml'
 
   options.language 'ruby'
   options.server 'rails server'
