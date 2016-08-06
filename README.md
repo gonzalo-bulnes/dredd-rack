@@ -28,7 +28,7 @@ Add the gem to your `Gemfile`:
 ```ruby
 # Gemfile
 
-gem 'dredd-rack', '0.9.0' # see semver.org
+gem 'dredd-rack', '0.10.0' # see semver.org
 ```
 
 Define which application Dredd::Rack must serve automatically:
@@ -138,7 +138,7 @@ License
 -------
 
     Dredd::Rack provides convenient API blueprint testing to Rack applications.
-    Copyright (C) 2015  Gonzalo Bulnes Guilpain
+    Copyright (C) 2015, 2016  Gonzalo Bulnes Guilpain
 
     Copyright (C) 2012 Chad Humphries, David Chelimsky, Myron Marston
     Copyright (C) 2009 Chad Humphries, David Chelimsky
