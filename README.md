@@ -127,6 +127,30 @@ Both the [rake task documentation][rake-task-doc] and the [runner documentation]
 
 Configuring a runner for remote API blueprint compliance testing is as easy as setting its **api_endpoint** option (see the [runner documentation][conf]). Please remember that you must ensure that the API is being served at the specified URI when performing remote API blueprint validation.
 
+Development
+-----------
+
+### Testing and documentation
+
+
+This gem behaviour is described using [RSpec][rspec] and RSpec [tags][tags] are used to categorize the spec examples.
+
+Spec examples that are tagged as `public` describe aspects of the gem public API, and MAY be considered as the gem documentation.
+
+The `private` or `protected` specs are written for development purpose only. Because they describe internal behaviour which may change at any moment without notice, they are only executed as a secondary task by the [continuous integration service][travis] and SHOULD be ignored.
+
+Run `rake spec:public` to print the gem public documentation.
+
+  [rspec]: https://www.relishapp.com/rspec/rspec-rails/docs
+  [tags]: https://www.relishapp.com/rspec/rspec-core/v/3-1/docs/command-line/tag-option
+  [travis]: https://travis-ci.org/gonzalo-bulnes/dredd-rack/builds
+
+### Contributions
+
+Contributions are welcome! The best way to get in touch is probably to open an issue, so we can start talking.  So far, there is no rigid roadmap, and more ideas, help, feedback are welcome at any point. Please note that Dredd::Rack is released with a [Contributor Code of Conduct][coc]. By participating in this project you agree to abide by its terms.
+
+  [coc]: ./CODE_OF_CONDUCT.md
+
 Credits
 -------
 
