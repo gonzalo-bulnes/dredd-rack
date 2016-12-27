@@ -8,6 +8,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 - A Contributor Code of Conduct to ensure everyone feels safe contributing
+- Add support for Rake 12 - @tobiashm
 
 ## [0.10.0] - 2015-08-06
 

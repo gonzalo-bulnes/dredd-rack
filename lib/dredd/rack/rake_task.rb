@@ -52,7 +52,7 @@ module Dredd
         @description = 'Run Dredd::Rack API blueprint verification'
         @runner = Dredd::Rack::Runner.new(ENV['API_HOST'])
 
-        desc description unless ::Rake.application.last_comment
+        desc description unless ::Rake.application.last_description
         rake_task = task name, *args do |task_args|
           task_block.call(*[self, task_args].slice(0, task_block.arity)) if task_block
           run_task(runner)
