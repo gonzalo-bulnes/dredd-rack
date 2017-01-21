@@ -145,10 +145,17 @@ Run `rake spec:public` to print the gem public documentation.
   [tags]: https://www.relishapp.com/rspec/rspec-core/v/3-1/docs/command-line/tag-option
   [travis]: https://travis-ci.org/gonzalo-bulnes/dredd-rack/builds
 
-### Contributions
+Contributions
+-------------
 
-Contributions are welcome! The best way to get in touch is probably to open an issue, so we can start talking.  So far, there is no rigid roadmap, and more ideas, help, feedback are welcome at any point. Please note that Dredd::Rack is released with a [Contributor Code of Conduct][coc]. By participating in this project you agree to abide by its terms.
+Contributions are welcome! The best way to get in touch is probably to open an issue, whether it is to get help, give feedback or discuss an idea. Also, when there are plan to extend Dredd::Rack, the [intended API][intended] is [described beforehand so we can discuss it][rdd]. Feel free to jump into the discussion at any moment!
 
+Note that opening pull requests with work in progress is not only welcome, but encouraged! Let's talk early, talk often, and we will all learn in the way :)
+
+Please note that Dredd::Rack is released with a [Contributor Code of Conduct][coc]. By participating in this project you agree to abide by its terms.
+
+  [rdd]: http://tom.preston-werner.com/2010/08/23/readme-driven-development.html
+  [intended]: ./doc/README.md
   [coc]: ./CODE_OF_CONDUCT.md
 
 Credits
