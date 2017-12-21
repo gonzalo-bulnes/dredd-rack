@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased] - 2017-12-21
+
+### Fixed
+
+- Remove `Gemfile.lock` - mostly to acknowledge that it is only used in development and is not really necessary.
+
 ## [0.11.0] - 2016-12-29
 
 ### Added
