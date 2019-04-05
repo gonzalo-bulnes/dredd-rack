@@ -1,9 +1,12 @@
 require 'bundler/setup'
+
 Bundler.setup
 
 require 'dredd/rack'
 
 Dir["./spec/support/**/*.rb"].sort.each { |f| require f; puts f }
+
+Capybara.server = :webrick
 
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
