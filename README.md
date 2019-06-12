@@ -7,8 +7,6 @@ Dredd::Rack
 [![Dredd Reference Version](https://img.shields.io/badge/dredd_reference_version-2.2.5-brightgreen.svg)](https://github.com/apiaryio/dredd)
 [![Inline docs](http://inch-ci.org/github/gonzalo-bulnes/dredd-rack.svg?branch=master)](http://inch-ci.org/github/gonzalo-bulnes/dredd-rack)
 
-> **DISCLAIMER**: This is an early version of Dredd::Rack, please be aware that it will not be stable until `v1.0.0`. At any moment, [feedback][issues] is more than welcome! : ) -- [GB][gonzalo-bulnes]
-
 This gem provides a [Dredd][dredd] runner and a `dredd` rake task to make [API blueprint][blueprint] testing convenient for Rack applications. When verifying blueprints locally, an application server is automatically set up, without need of any manual intervention.
 
 Besides being convenient, that allows to use the API blueprints as acceptance test suites to practice [BDD][rspec-book] with Dredd and RSpec, for example, while clients developers use [Apiary][apiary] as a mock server.
@@ -28,7 +26,7 @@ Add the gem to your `Gemfile`:
 ```ruby
 # Gemfile
 
-gem 'dredd-rack', '0.11.0' # see semver.org
+gem 'dredd-rack', '~> 1.0' # see semver.org
 ```
 
 Define which application Dredd::Rack must serve automatically:
