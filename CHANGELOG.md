@@ -5,6 +5,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased] - 2017-12-21
 
+### Added
+
+- Support for Capybara 2 and 3 - @jesperronn
+
 ### Fixed
 
 - Remove `Gemfile.lock` - mostly to acknowledge that it is only used in development and is not really necessary.
@@ -117,4 +121,3 @@ The original implementation of the Rake task was shared in this [gist][gist].
 ## Inspiration
 
 Thanks to @nTraum for pointing me at http://keepachangelog.com and to @olivierlacan for writing it in the first place!
-
